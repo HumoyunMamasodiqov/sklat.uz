@@ -1,2 +1,0 @@
-CONFIG = dict((('extra_compile_args', ['-DHAVE_PATCHED_LMDB=1', '-UNDEBUG', '-w', '/FIPython.h']), ('extra_sources', ['D:\\a\\py-lmdb\\py-lmdb\\build/lib/mdb.c', 'D:\\a\\py-lmdb\\py-lmdb\\build/lib/midl.c']), ('extra_library_dirs', []), ('extra_include_dirs', ['lib/py-lmdb', 'D:\\a\\py-lmdb\\py-lmdb\\build/lib', 'D:\\a\\py-lmdb\\py-lmdb\\lib/py-lmdb', 'lib\\win32']), ('libraries', ['Advapi32'])))
-
