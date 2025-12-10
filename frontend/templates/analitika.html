@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklat.uz - Do'kon Boshqaruv Tizimi</title>
+    <link rel="icon" href="{% static 'img/sklatlogo.png' %}">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-white shadow-sm z-50">
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'home' %}" data-readdy="true" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer">
+                    <i class="ri-arrow-left-line text-gray-600"></i>
+                </a>
+                <h1 class="text-lg font-semibold text-gray-800">Analitika</h1>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="filter-btn">
+                    <i class="ri-filter-3-line text-gray-600"></i>
+                </button>
+                <button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="settings-btn">
+                    <i class="ri-settings-3-line text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-20 px-4 pb-4">
+        <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-money-dollar-circle-line text-blue-600"></i>
+                    </div>
+                    <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">+12.5%</div>
+                </div>
+                <div class="text-xl font-bold text-gray-800">2,847,500</div>
+                <div class="text-xs text-gray-500">Bugungi sotuv (so'm)</div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-line-chart-line text-green-600"></i>
+                    </div>
+                    <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">+8.2%</div>
+                </div>
+                <div class="text-xl font-bold text-gray-800">45,230,000</div>
+                <div class="text-xs text-gray-500">Oylik daromad (so'm)</div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-trophy-line text-purple-600"></i>
+                    </div>
+                    <div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">TOP</div>
+                </div>
+                <div class="text-sm font-bold text-gray-800">Non oq</div>
+                <div class="text-xs text-gray-500">Eng ko'p sotiladigan</div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-user-3-line text-orange-600"></i>
+                    </div>
+                    <div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">+15</div>
+                </div>
+                <div class="text-xl font-bold text-gray-800">1,247</div>
+                <div class="text-xs text-gray-500">Faol mijozlar</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Time Filter -->
+    <section class="px-4 pb-4">
+        <div class="bg-gray-100 p-1 rounded-lg flex space-x-1" id="time-filter">
+            <button class="flex-1 px-1 py-1 bg-white text-primary rounded text-sm font-medium cursor-pointer !rounded-button time-btn" data-period="day">Kunlik</button>
+            <button class="flex-1 px-1 py-1 text-gray-600 rounded text-sm font-medium cursor-pointer !rounded-button time-btn" data-period="week">Haftalik</button>
+            <button class="flex-1 px-1 py-1 text-gray-600 rounded text-sm font-medium cursor-pointer !rounded-button time-btn" data-period="month">Oylik</button>
+            <button class="flex-1 px-1 py-1 text-gray-600 rounded text-sm font-medium cursor-pointer !rounded-button time-btn" data-period="year">Yillik</button>
+        </div>
+    </section>
+
+    <!-- Sales Chart -->
+    <section class="px-4 pb-4">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-semibold text-gray-800">Sotuv dinamikasi</h3>
+                <button class="text-xs text-primary cursor-pointer">Batafsil</button>
+            </div>
+            <div id="sales-chart" style="width: 100%; height: 200px;"></div>
+        </div>
+    </section>
+
+    <!-- Top Products -->
+    <section class="px-4 pb-4">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-semibold text-gray-800">Eng ko'p sotiladigan mahsulotlar</h3>
+                <button class="text-xs text-primary cursor-pointer">Barchasini ko'rish</button>
+            </div>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Fresh%20white%20bread%20loaf%2C%20bakery%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=40&height=40&seq=20&orientation=squarish" 
+                             alt="Non" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Non oq</h4>
+                                <p class="text-xs text-gray-500">156 dona sotildi</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">546,000 so'm</div>
+                                <div class="text-xs text-green-600">32.5%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Fresh%20chicken%20eggs%20in%20carton%2C%20farm%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=40&height=40&seq=21&orientation=squarish" 
+                             alt="Tuxum" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Tuxum 10 dona</h4>
+                                <p class="text-xs text-gray-500">89 dona sotildi</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">2,225,000 so'm</div>
+                                <div class="text-xs text-green-600">18.7%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Fresh%20red%20apple%20fruit%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=40&height=40&seq=22&orientation=squarish" 
+                             alt="Olma" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Olma qizil</h4>
+                                <p class="text-xs text-gray-500">67 kg sotildi</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">804,000 so'm</div>
+                                <div class="text-xs text-green-600">14.2%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Fresh%20milk%20bottle%2C%20dairy%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=40&height=40&seq=23&orientation=squarish" 
+                             alt="Sut" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Sut 1L</h4>
+                                <p class="text-xs text-gray-500">43 dona sotildi</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">387,000 so'm</div>
+                                <div class="text-xs text-green-600">9.8%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Coca%20Cola%20bottle%20drink%2C%20beverage%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=40&height=40&seq=24&orientation=squarish" 
+                             alt="Kola" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Coca Cola 0.5L</h4>
+                                <p class="text-xs text-gray-500">38 dona sotildi</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">266,000 so'm</div>
+                                <div class="text-xs text-green-600">7.3%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Analytics -->
+    <section class="px-4 pb-4">
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-sm font-semibold text-gray-800 mb-3">Kategoriyalar bo'yicha</h3>
+                <div id="category-chart" style="width: 100%; height: 120px;"></div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-sm font-semibold text-gray-800 mb-3">Faol soatlar</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600">10:00 - 12:00</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 bg-primary h-1 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-800">35%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600">14:00 - 16:00</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 bg-secondary h-1 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-800">28%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600">18:00 - 20:00</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 bg-orange-400 h-1 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-800">22%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600">08:00 - 10:00</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 bg-purple-400 h-1 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-800">15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="px-4 pb-24">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h3 class="text-base font-semibold text-gray-800 mb-4">Tezkor amallar</h3>
+            <div class="grid grid-cols-3 gap-3">
+                <button class="flex flex-col items-center space-y-2 p-3 bg-blue-50 rounded-lg cursor-pointer !rounded-button" id="export-report">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-download-2-line text-blue-600"></i>
+                    </div>
+                    <span class="text-xs text-blue-600 font-medium">Hisobot export</span>
+                </button>
+                
+                <button class="flex flex-col items-center space-y-2 p-3 bg-green-50 rounded-lg cursor-pointer !rounded-button" id="refresh-data">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-refresh-line text-green-600"></i>
+                    </div>
+                    <span class="text-xs text-green-600 font-medium">Ma'lumot yangilash</span>
+                </button>
+                
+                <button class="flex flex-col items-center space-y-2 p-3 bg-purple-50 rounded-lg cursor-pointer !rounded-button" id="detailed-report">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-file-chart-line text-purple-600"></i>
+                    </div>
+                    <span class="text-xs text-purple-600 font-medium">Batafsil hisobot</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
+        <div class="grid grid-cols-5 h-16">
+            <a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-home-5-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Bosh sahifa</span>
+            </a>
+            <a href="{% url 'mahsulotlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+            <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-shopping-bag-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mahsulotlar</span>
+            </button>
+        </a>
+    
+            <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-bar-chart-box-fill text-primary"></i>
+                </div>
+                <span class="text-xs text-primary font-medium">Analitika</span>
+            </button>
+      
+            <a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+            <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-group-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mijozlar</span>
+            </button>
+        </a>
+    
+            <a href="{% url 'sozlamalar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+            <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-settings-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Sozlamalar</span>
+            </button>
+        </a>
+        </div>
+    </nav>
+
+    <script id="time-filter-functionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeButtons = document.querySelectorAll('.time-btn');
+            
+            timeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    timeButtons.forEach(btn => {
+                        btn.classList.remove('bg-white', 'text-primary');
+                        btn.classList.add('text-gray-600');
+                    });
+                    
+                    this.classList.remove('text-gray-600');
+                    this.classList.add('bg-white', 'text-primary');
+                    
+                    const period = this.getAttribute('data-period');
+                    updateCharts(period);
+                });
+            });
+            
+            function updateCharts(period) {
+                const salesChart = echarts.getInstanceByDom(document.getElementById('sales-chart'));
+                const categoryChart = echarts.getInstanceByDom(document.getElementById('category-chart'));
+                
+                if (salesChart) {
+                    salesChart.setOption(getSalesChartData(period));
+                }
+                if (categoryChart) {
+                    categoryChart.setOption(getCategoryChartData(period));
+                }
+            }
+        });
+    </script>
+
+    <script id="charts-initialization">
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesChart = echarts.init(document.getElementById('sales-chart'));
+            const categoryChart = echarts.init(document.getElementById('category-chart'));
+            
+            function getSalesChartData(period = 'day') {
+                let data, categories;
+                
+                switch(period) {
+                    case 'day':
+                        categories = ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
+                        data = [120000, 180000, 350000, 420000, 380000, 450000, 520000, 380000];
+                        break;
+                    case 'week':
+                        categories = ['Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan', 'Yak'];
+                        data = [1200000, 1800000, 2200000, 1900000, 2500000, 2800000, 2100000];
+                        break;
+                    case 'month':
+                        categories = ['1-haf', '2-haf', '3-haf', '4-haf'];
+                        data = [12000000, 15000000, 18000000, 16500000];
+                        break;
+                    case 'year':
+                        categories = ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'Iyn', 'Iyl', 'Avg', 'Sen', 'Okt', 'Noy', 'Dek'];
+                        data = [45000000, 52000000, 48000000, 55000000, 62000000, 58000000, 65000000, 70000000, 68000000, 72000000, 75000000, 80000000];
+                        break;
+                    default:
+                        categories = ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
+                        data = [120000, 180000, 350000, 420000, 380000, 450000, 520000, 380000];
+                }
+                
+                return {
+                    xAxis: {
+                        type: 'category',
+                        data: categories,
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        axisLabel: { fontSize: 10, color: '#6B7280' }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        show: false
+                    },
+                    grid: {
+                        left: 0,
+                        right: 0,
+                        top: 10,
+                        bottom: 20
+                    },
+                    series: [{
+                        data: data,
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: { color: '#3B82F6', width: 3 },
+                        itemStyle: { color: '#3B82F6' },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(59, 130, 246, 0.3)' },
+                                    { offset: 1, color: 'rgba(59, 130, 246, 0.05)' }
+                                ]
+                            }
+                        }
+                    }]
+                };
+            }
+            
+            function getCategoryChartData(period = 'day') {
+                return {
+                    series: [{
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['50%', '50%'],
+                        data: [
+                            { value: 35, name: 'Oziq-ovqat', itemStyle: { color: '#3B82F6' } },
+                            { value: 25, name: 'Meva-sabzavot', itemStyle: { color: '#10B981' } },
+                            { value: 20, name: 'Ichimliklar', itemStyle: { color: '#F59E0B' } },
+                            { value: 15, name: 'Sut mahsulotlari', itemStyle: { color: '#8B5CF6' } },
+                            { value: 5, name: 'Boshqalar', itemStyle: { color: '#EF4444' } }
+                        ],
+                        label: { show: false },
+                        emphasis: { scale: false }
+                    }]
+                };
+            }
+            
+            salesChart.setOption(getSalesChartData());
+            categoryChart.setOption(getCategoryChartData());
+            
+            window.getSalesChartData = getSalesChartData;
+            window.getCategoryChartData = getCategoryChartData;
+        });
+    </script>
+
+    <script id="quick-actions">
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportReportBtn = document.getElementById('export-report');
+            const refreshDataBtn = document.getElementById('refresh-data');
+            const detailedReportBtn = document.getElementById('detailed-report');
+            
+            exportReportBtn.addEventListener('click', function() {
+                showNotification('Hisobot export qilinyapti...', 'info');
+                setTimeout(() => {
+                    showNotification('Hisobot muvaffaqiyatli export qilindi!', 'success');
+                }, 2000);
+            });
+            
+            refreshDataBtn.addEventListener('click', function() {
+                showNotification('Ma\'lumotlar yangilanmoqda...', 'info');
+                setTimeout(() => {
+                    showNotification('Ma\'lumotlar yangilandi!', 'success');
+                    location.reload();
+                }, 1500);
+            });
+            
+            detailedReportBtn.addEventListener('click', function() {
+                showDetailedReportModal();
+            });
+            
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' : 
+                    type === 'info' ? 'bg-blue-500 text-white' : 'bg-red-500 text-white'
+                }`;
+                notification.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <i class="ri-${type === 'success' ? 'check' : type === 'info' ? 'information' : 'error-warning'}-line"></i>
+                        <span class="text-sm">${message}</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+            
+            function showDetailedReportModal() {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+                modal.innerHTML = `
+                    <div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800">Batafsil hisobot</h3>
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+                                <i class="ri-close-line text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-600 mb-1">Jami sotuv</div>
+                                    <div class="text-xl font-bold text-gray-800">2,847,500 so'm</div>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-600 mb-1">Foyda</div>
+                                    <div class="text-xl font-bold text-green-600">1,234,500 so'm</div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="text-sm text-gray-600 mb-2">Eng yaxshi soatlar</div>
+                                <div class="text-base font-medium text-gray-800">10:00 - 12:00 (35% sotuv)</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="text-sm text-gray-600 mb-2">Eng ko'p sotilgan kategoriya</div>
+                                <div class="text-base font-medium text-gray-800">Oziq-ovqat (35%)</div>
+                            </div>
+                            <button class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button">PDF sifatida yuklab olish</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                const closeButton = modal.querySelector('.close-modal');
+                closeButton.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script id="filter-functionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtn = document.getElementById('filter-btn');
+            
+            filterBtn.addEventListener('click', function() {
+                showFilterModal();
+            });
+            
+            function showFilterModal() {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+                modal.innerHTML = `
+                    <div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800">Filtr sozlamalari</h3>
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+                                <i class="ri-close-line text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Vaqt oralig'i</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="date" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                                    <input type="date" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kategoriya</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" class="opacity-0 absolute">
+                                        <div class="w-4 h-4 bg-primary rounded border-2 border-primary flex items-center justify-center">
+                                            <i class="ri-check-line text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700">Oziq-ovqat</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" class="opacity-0 absolute">
+                                        <div class="w-4 h-4 bg-white rounded border-2 border-gray-300"></div>
+                                        <span class="text-sm text-gray-700">Meva-sabzavot</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" class="opacity-0 absolute">
+                                        <div class="w-4 h-4 bg-white rounded border-2 border-gray-300"></div>
+                                        <span class="text-sm text-gray-700">Ichimliklar</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3 pt-4">
+                                <button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button">Tozalash</button>
+                                <button class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button apply-filter">Qo'llash</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                const closeButton = modal.querySelector('.close-modal');
+                const applyButton = modal.querySelector('.apply-filter');
+                
+                closeButton.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                applyButton.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                    showNotification('Filtr qo\'llandi!', 'success');
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+            
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'
+                }`;
+                notification.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <i class="ri-${type === 'success' ? 'check' : 'information'}-line"></i>
+                        <span class="text-sm">${message}</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+
+</html>

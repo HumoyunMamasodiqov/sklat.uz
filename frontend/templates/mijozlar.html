@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+    {% load static %}
+<head><script src="https://static.readdy.ai/static/e.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Sklat.uz | Do'kon Boshqaruv Tizimi</title>
+    <link rel="icon" href="{% static 'img/sklatlogo.png' %}">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+</style>
+</head>
+<body class="bg-gray-50">
+<!-- Header -->
+<header class="fixed top-0 w-full bg-white shadow-sm z-50">
+<div class="flex items-center justify-between px-4 py-3">
+<div class="flex items-center space-x-3">
+<a href="{% url 'home' %}" data-readdy="true" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer">
+<i class="ri-arrow-left-line text-gray-600"></i>
+</a>
+<h1 class="text-lg font-semibold text-gray-800">Mijozlar</h1>
+</div>
+<div class="flex items-center space-x-3">
+<button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="search-btn">
+<i class="ri-search-line text-gray-600"></i>
+</button>
+<button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="settings-btn">
+<i class="ri-settings-3-line text-gray-600"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- Search Bar -->
+<section class="pt-20 px-4 pb-4">
+<div class="relative">
+<input type="text" placeholder="Mijoz qidirish..." class="w-full pl-10 pr-12 py-3 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="search-input">
+<div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+<i class="ri-search-line text-gray-400 text-sm"></i>
+</div>
+<button class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-primary rounded flex items-center justify-center cursor-pointer" id="filter-btn">
+<i class="ri-filter-3-line text-white text-xs"></i>
+</button>
+</div>
+</section>
+<!-- Stats Cards -->
+<section class="px-4 pb-4">
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="bg-white rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+<i class="ri-group-line text-blue-600"></i>
+</div>
+<div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">+8.2%</div>
+</div>
+<div class="text-xl font-bold text-gray-800">1,247</div>
+<div class="text-xs text-gray-500">Jami mijozlar</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+<i class="ri-user-star-line text-green-600"></i>
+</div>
+<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">+15</div>
+</div>
+<div class="text-xl font-bold text-gray-800">892</div>
+<div class="text-xs text-gray-500">Faol mijozlar</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+<i class="ri-user-add-line text-purple-600"></i>
+</div>
+<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">Bu oy</div>
+</div>
+<div class="text-xl font-bold text-gray-800">47</div>
+<div class="text-xs text-gray-500">Yangi mijozlar</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+<i class="ri-money-dollar-circle-line text-orange-600"></i>
+</div>
+<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">O'rtacha</div>
+</div>
+<div class="text-lg font-bold text-gray-800">185,500</div>
+<div class="text-xs text-gray-500">O'rtacha xarid (so'm)</div>
+</div>
+</div>
+</section>
+<!-- Add Customer Button -->
+<section class="px-4 pb-4">
+<button class="w-full bg-primary text-white py-4 rounded-xl font-medium flex items-center justify-center space-x-2 cursor-pointer !rounded-button" id="add-customer-btn">
+<i class="ri-add-line text-lg"></i>
+<span>Yangi mijoz qo'shish</span>
+</button>
+</section>
+<!-- Customer List -->
+<section class="px-4 pb-24">
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="px-4 py-3 border-b border-gray-100">
+<h3 class="text-base font-semibold text-gray-800">Mijozlar ro'yxati</h3>
+</div>
+<div class="divide-y divide-gray-100" id="customers-list">
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="1">
+<div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+<span class="text-blue-600 font-semibold">AK</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Aziz Karimov</h4>
+<p class="text-xs text-gray-500">+998 90 123 45 67</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">2,450,000 so'm</div>
+<div class="text-xs text-gray-500">Bugun, 14:30</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="2">
+<div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+<span class="text-green-600 font-semibold">MR</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Malika Rahimova</h4>
+<p class="text-xs text-gray-500">+998 91 234 56 78</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">1,890,000 so'm</div>
+<div class="text-xs text-gray-500">Kecha, 16:45</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="3">
+<div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+<span class="text-purple-600 font-semibold">SN</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Sardor Nazarov</h4>
+<p class="text-xs text-gray-500">+998 93 345 67 89</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">3,120,000 so'm</div>
+<div class="text-xs text-gray-500">3 kun oldin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="4">
+<div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+<span class="text-orange-600 font-semibold">DT</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Dilnoza Tursunova</h4>
+<p class="text-xs text-gray-500">+998 94 456 78 90</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">875,000 so'm</div>
+<div class="text-xs text-gray-500">1 hafta oldin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="5">
+<div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+<span class="text-red-600 font-semibold">FU</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Farrux Umarov</h4>
+<p class="text-xs text-gray-500">+998 95 567 89 01</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">1,650,000 so'm</div>
+<div class="text-xs text-gray-500">2 hafta oldin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="6">
+<div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+<span class="text-indigo-600 font-semibold">NI</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Nilufar Ismoilova</h4>
+<p class="text-xs text-gray-500">+998 97 678 90 12</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">2,340,000 so'm</div>
+<div class="text-xs text-gray-500">3 hafta oldin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="7">
+<div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+<span class="text-pink-600 font-semibold">BM</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Bobur Mirzayev</h4>
+<p class="text-xs text-gray-500">+998 98 789 01 23</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">1,125,000 so'm</div>
+<div class="text-xs text-gray-500">1 oy oldin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" data-customer-id="8">
+<div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+<span class="text-teal-600 font-semibold">GS</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-medium text-gray-800">Gulnora Saidova</h4>
+<p class="text-xs text-gray-500">+998 99 890 12 34</p>
+</div>
+<div class="text-right">
+<div class="text-sm font-semibold text-gray-800">780,000 so'm</div>
+<div class="text-xs text-gray-500">1 oy oldin</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
+<div class="grid grid-cols-5 h-16">
+<a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-home-5-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Bosh sahifa</span>
+</a>
+<a href="{% url 'mahsulotlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-shopping-bag-3-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Mahsulotlar</span>
+</button>
+</a>
+<a href="{% url 'analitika' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-bar-chart-box-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Analitika</span>
+</button>
+</a>
+<a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-group-fill text-primary"></i>
+</div>
+<span class="text-xs text-primary font-medium">Mijozlar</span>
+</button>
+</a>
+
+<a href="{% url 'sozlamalar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-settings-3-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Sozlamalar</span>
+</a>
+</div>
+</nav>
+<script id="search-functionality">
+document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.getElementById('search-input');
+const customersList = document.getElementById('customers-list');
+const customers = customersList.querySelectorAll('[data-customer-id]');
+searchInput.addEventListener('input', function() {
+const searchTerm = this.value.toLowerCase();
+customers.forEach(customer => {
+const name = customer.querySelector('h4').textContent.toLowerCase();
+const phone = customer.querySelector('p').textContent.toLowerCase();
+if (name.includes(searchTerm) || phone.includes(searchTerm)) {
+customer.style.display = 'flex';
+} else {
+customer.style.display = 'none';
+}
+});
+});
+});
+</script>
+<script id="add-customer-modal">
+document.addEventListener('DOMContentLoaded', function() {
+const addCustomerBtn = document.getElementById('add-customer-btn');
+addCustomerBtn.addEventListener('click', function() {
+showAddCustomerModal();
+});
+function showAddCustomerModal() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+modal.innerHTML = `
+<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-semibold text-gray-800">Yangi mijoz qo'shish</h3>
+<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+<i class="ri-close-line text-gray-600"></i>
+</button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Ism va familiya</label>
+<input type="text" placeholder="Mijoz ismi" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="customer-name">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Telefon raqami</label>
+<input type="tel" placeholder="+998 90 123 45 67" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="customer-phone">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Manzil</label>
+<input type="text" placeholder="Mijoz manzili" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="customer-address">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Izoh</label>
+<textarea placeholder="Qo'shimcha ma'lumot" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm h-20 resize-none" id="customer-note"></textarea>
+</div>
+<div class="flex space-x-3 pt-4">
+<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal">Bekor qilish</button>
+<button class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button save-customer">Saqlash</button>
+</div>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const closeButtons = modal.querySelectorAll('.close-modal');
+const saveButton = modal.querySelector('.save-customer');
+closeButtons.forEach(button => {
+button.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+});
+saveButton.addEventListener('click', function() {
+const name = modal.querySelector('#customer-name').value;
+const phone = modal.querySelector('#customer-phone').value;
+if (name && phone) {
+document.body.removeChild(modal);
+showNotification('Mijoz muvaffaqiyatli qo\'shildi!', 'success');
+} else {
+showNotification('Iltimos, barcha maydonlarni to\'ldiring!', 'error');
+}
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+});
+</script>
+<script id="filter-modal">
+document.addEventListener('DOMContentLoaded', function() {
+const filterBtn = document.getElementById('filter-btn');
+filterBtn.addEventListener('click', function() {
+showFilterModal();
+});
+function showFilterModal() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+modal.innerHTML = `
+<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-semibold text-gray-800">Filtr sozlamalari</h3>
+<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+<i class="ri-close-line text-gray-600"></i>
+</button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Oxirgi xarid sanasi</label>
+<div class="grid grid-cols-2 gap-2">
+<input type="date" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+<input type="date" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Xarid summasi (so'm)</label>
+<div class="grid grid-cols-2 gap-2">
+<input type="number" placeholder="Dan" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+<input type="number" placeholder="Gacha" class="px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Mijoz holati</label>
+<div class="space-y-2">
+<label class="flex items-center space-x-2">
+<input type="checkbox" class="opacity-0 absolute">
+<div class="w-4 h-4 bg-primary rounded border-2 border-primary flex items-center justify-center">
+<i class="ri-check-line text-white text-xs"></i>
+</div>
+<span class="text-sm text-gray-700">Faol mijozlar</span>
+</label>
+<label class="flex items-center space-x-2">
+<input type="checkbox" class="opacity-0 absolute">
+<div class="w-4 h-4 bg-white rounded border-2 border-gray-300"></div>
+<span class="text-sm text-gray-700">Yangi mijozlar</span>
+</label>
+<label class="flex items-center space-x-2">
+<input type="checkbox" class="opacity-0 absolute">
+<div class="w-4 h-4 bg-white rounded border-2 border-gray-300"></div>
+<span class="text-sm text-gray-700">Nofaol mijozlar</span>
+</label>
+</div>
+</div>
+<div class="flex space-x-3 pt-4">
+<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button">Tozalash</button>
+<button class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button apply-filter">Qo'llash</button>
+</div>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const closeButton = modal.querySelector('.close-modal');
+const applyButton = modal.querySelector('.apply-filter');
+closeButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+applyButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+showNotification('Filtr qo\'llandi!', 'success');
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+});
+</script>
+<script id="customer-details-modal">
+document.addEventListener('DOMContentLoaded', function() {
+const customers = document.querySelectorAll('[data-customer-id]');
+customers.forEach(customer => {
+customer.addEventListener('click', function() {
+const customerId = this.getAttribute('data-customer-id');
+const customerName = this.querySelector('h4').textContent;
+const customerPhone = this.querySelector('p').textContent;
+const customerTotal = this.querySelector('.text-right .text-sm').textContent;
+const lastPurchase = this.querySelector('.text-right .text-xs').textContent;
+showCustomerDetailsModal(customerId, customerName, customerPhone, customerTotal, lastPurchase);
+});
+});
+function showCustomerDetailsModal(id, name, phone, total, lastPurchase) {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+modal.innerHTML = `
+<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-semibold text-gray-800">Mijoz ma'lumotlari</h3>
+<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+<i class="ri-close-line text-gray-600"></i>
+</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+<div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+<span class="text-white font-bold text-lg">${name.split(' ').map(n => n[0]).join('')}</span>
+</div>
+<div>
+<h4 class="text-lg font-semibold text-gray-800">${name}</h4>
+<p class="text-sm text-gray-600">${phone}</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-blue-50 p-4 rounded-lg">
+<div class="text-sm text-blue-600 mb-1">Jami xaridlar</div>
+<div class="text-lg font-bold text-blue-800">${total}</div>
+</div>
+<div class="bg-green-50 p-4 rounded-lg">
+<div class="text-sm text-green-600 mb-1">Oxirgi xarid</div>
+<div class="text-sm font-medium text-green-800">${lastPurchase}</div>
+</div>
+</div>
+<div class="bg-gray-50 p-4 rounded-lg">
+<div class="text-sm text-gray-600 mb-2">Xaridlar tarixi</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-800">Non oq - 5 dona</span>
+<span class="text-sm font-medium text-gray-800">17,500 so'm</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-800">Sut 1L - 2 dona</span>
+<span class="text-sm font-medium text-gray-800">18,000 so'm</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-800">Tuxum 10 dona</span>
+<span class="text-sm font-medium text-gray-800">25,000 so'm</span>
+</div>
+</div>
+</div>
+<div class="flex space-x-3 pt-4">
+<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal">Yopish</button>
+<button class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button edit-customer">Tahrirlash</button>
+</div>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const closeButtons = modal.querySelectorAll('.close-modal');
+const editButton = modal.querySelector('.edit-customer');
+closeButtons.forEach(button => {
+button.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+});
+editButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+showNotification('Tahrirlash rejimi ochildi!', 'info');
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+});
+</script>
+<script id="notification-system">
+function showNotification(message, type) {
+const notification = document.createElement('div');
+notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+type === 'success' ? 'bg-green-500 text-white' :
+type === 'info' ? 'bg-blue-500 text-white' :
+type === 'error' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'
+}`;
+notification.innerHTML = `
+<div class="flex items-center space-x-2">
+<i class="ri-${type === 'success' ? 'check' : type === 'info' ? 'information' : type === 'error' ? 'error-warning' : 'notification'}-line"></i>
+<span class="text-sm">${message}</span>
+</div>
+`;
+document.body.appendChild(notification);
+setTimeout(() => {
+notification.style.opacity = '0';
+setTimeout(() => {
+if (document.body.contains(notification)) {
+document.body.removeChild(notification);
+}
+}, 300);
+}, 3000);
+}
+</script>
+
+</html>

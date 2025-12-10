@@ -1,0 +1,815 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+    {% load static %}
+<head><script src="https://static.readdy.ai/static/e.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Sklat.uz | Do'kon Boshqaruv Tizimi</title>
+    <link rel="icon" href="{% static 'img/sklatlogo.png' %}">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+.gradient-bg {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+</style>
+</head>
+<body class="bg-gray-50">
+<!-- Header -->
+<header class="fixed top-0 w-full bg-white shadow-sm z-50">
+<div class="flex items-center justify-between px-4 py-3">
+<div class="flex items-center space-x-3">
+<a href="{% url 'home' %}" data-readdy="true" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer">
+<i class="ri-arrow-left-line text-gray-600"></i>
+</a>
+<h1 class="text-lg font-semibold text-gray-800">Mahsulotlar</h1>
+</div>
+<div class="flex items-center space-x-3">
+<button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="view-toggle">
+<i class="ri-layout-grid-line text-gray-600"></i>
+</button>
+<button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer">
+<i class="ri-more-2-line text-gray-600"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- Search and Filter Section -->
+<section class="pt-20 px-4 pb-4 bg-white">
+<div class="relative mb-4">
+<input type="text" placeholder="Mahsulot nomi yoki shtrix kod bo'yicha qidirish..."
+class="w-full pl-10 pr-12 py-3 bg-gray-50 rounded-lg text-sm border-none focus:ring-2 focus:ring-primary focus:outline-none" id="search-input">
+<div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+<i class="ri-search-line text-gray-400 text-sm"></i>
+</div>
+<button class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-primary rounded flex items-center justify-center cursor-pointer !rounded-button">
+<i class="ri-search-line text-white text-xs"></i>
+</button>
+</div>
+<div class="flex space-x-2 overflow-x-auto pb-2" id="category-filters">
+<button class="px-4 py-2 bg-primary text-white rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="all">Barchasi</button>
+<button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="oziq-ovqat">Oziq-ovqat</button>
+<button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="ichimliklar">Ichimliklar</button>
+<button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="meva-sabzavot">Meva-sabzavot</button>
+<button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="sut-mahsulotlari">Sut mahsulotlari</button>
+<button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button" data-category="maishiy">Maishiy</button>
+</div>
+</section>
+<!-- Action Buttons -->
+<section class="px-4 pb-4">
+<div class="flex space-x-3">
+<button class="flex-1 bg-primary text-white py-3 px-4 rounded-lg text-sm font-medium cursor-pointer !rounded-button flex items-center justify-center space-x-2" id="add-product-btn">
+<i class="ri-add-line"></i>
+<span>Mahsulot qo'shish</span>
+</button>
+<button class="bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium cursor-pointer !rounded-button flex items-center justify-center space-x-2">
+<i class="ri-download-line"></i>
+<span>Import</span>
+</button>
+<button class="bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium cursor-pointer !rounded-button flex items-center justify-center space-x-2">
+<i class="ri-upload-line"></i>
+<span>Export</span>
+</button>
+</div>
+</section>
+<!-- Stats Cards -->
+<section class="px-4 pb-4">
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-white rounded-xl p-3 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+<i class="ri-shopping-bag-3-line text-blue-600 text-sm"></i>
+</div>
+</div>
+<div class="text-lg font-semibold text-gray-800">1,247</div>
+<div class="text-xs text-gray-500">Jami mahsulot</div>
+</div>
+<div class="bg-white rounded-xl p-3 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<div class="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
+<i class="ri-error-warning-line text-red-600 text-sm"></i>
+</div>
+</div>
+<div class="text-lg font-semibold text-gray-800">23</div>
+<div class="text-xs text-gray-500">Kam qolgan</div>
+</div>
+<div class="bg-white rounded-xl p-3 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<div class="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center">
+<i class="ri-folder-3-line text-purple-600 text-sm"></i>
+</div>
+</div>
+<div class="text-lg font-semibold text-gray-800">12</div>
+<div class="text-xs text-gray-500">Kategoriya</div>
+</div>
+</div>
+</section>
+<!-- Sort and Filter Options -->
+<section class="px-4 pb-4">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center space-x-3">
+<button class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer" id="sort-btn">
+<i class="ri-sort-asc text-gray-400"></i>
+<span>Saralash</span>
+</button>
+<button class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer" id="filter-btn">
+<i class="ri-filter-3-line text-gray-400"></i>
+<span>Filtr</span>
+</button>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-sm text-gray-500">1,247 ta mahsulot</span>
+</div>
+</div>
+</section>
+<!-- Products List -->
+<section class="px-4 pb-24" id="products-container">
+<!-- Oziq-ovqat Category -->
+<div class="mb-6" data-category="oziq-ovqat">
+<div class="flex items-center justify-between mb-3 cursor-pointer category-header">
+<h3 class="text-base font-semibold text-gray-800">Oziq-ovqat</h3>
+<div class="flex items-center space-x-2">
+<span class="text-xs text-gray-500">156 mahsulot</span>
+<i class="ri-arrow-down-s-line text-gray-400 transform transition-transform"></i>
+</div>
+</div>
+<div class="space-y-3 category-products">
+<!-- Product Item 1 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="oziq-ovqat" data-name="non oq">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20white%20bread%20loaf%2C%20bakery%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=10&orientation=squarish"
+alt="Non" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Non oq</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Oziq-ovqat • SKU: BR001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">2,500 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">3,500 so'm</div>
+<div class="text-xs text-gray-500">28 dona mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 2 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="oziq-ovqat" data-name="tuxum">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20chicken%20eggs%20in%20carton%2C%20farm%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=11&orientation=squarish"
+alt="Tuxum" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Tuxum 10 dona</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Oziq-ovqat • SKU: EG001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">18,000 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">25,000 so'm</div>
+<div class="text-xs text-red-500 flex items-center space-x-1">
+<i class="ri-error-warning-line text-xs"></i>
+<span>2 dona mavjud</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 3 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="oziq-ovqat" data-name="guruch">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=White%20rice%20grains%20in%20bowl%2C%20food%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=12&orientation=squarish"
+alt="Guruch" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Guruch 1 kg</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Oziq-ovqat • SKU: RC001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">12,000 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">16,000 so'm</div>
+<div class="text-xs text-gray-500">85 kg mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Meva-sabzavot Category -->
+<div class="mb-6" data-category="meva-sabzavot">
+<div class="flex items-center justify-between mb-3 cursor-pointer category-header">
+<h3 class="text-base font-semibold text-gray-800">Meva-sabzavot</h3>
+<div class="flex items-center space-x-2">
+<span class="text-xs text-gray-500">89 mahsulot</span>
+<i class="ri-arrow-down-s-line text-gray-400 transform transition-transform"></i>
+</div>
+</div>
+<div class="space-y-3 category-products">
+<!-- Product Item 4 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="meva-sabzavot" data-name="olma qizil">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20red%20apple%20fruit%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=13&orientation=squarish"
+alt="Olma" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Olma qizil</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Meva-sabzavot • SKU: AP001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">8,000 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">12,000 so'm</div>
+<div class="text-xs text-gray-500">45 kg mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 5 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="meva-sabzavot" data-name="banan">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20yellow%20banana%20bunch%2C%20tropical%20fruit%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=14&orientation=squarish"
+alt="Banan" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Banan 1 kg</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Meva-sabzavot • SKU: BN001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">15,000 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">22,000 so'm</div>
+<div class="text-xs text-gray-500">67 kg mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ichimliklar Category -->
+<div class="mb-6" data-category="ichimliklar">
+<div class="flex items-center justify-between mb-3 cursor-pointer category-header">
+<h3 class="text-base font-semibold text-gray-800">Ichimliklar</h3>
+<div class="flex items-center space-x-2">
+<span class="text-xs text-gray-500">234 mahsulot</span>
+<i class="ri-arrow-down-s-line text-gray-400 transform transition-transform"></i>
+</div>
+</div>
+<div class="space-y-3 category-products">
+<!-- Product Item 6 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="ichimliklar" data-name="coca cola">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Coca%20Cola%20bottle%20drink%2C%20beverage%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=15&orientation=squarish"
+alt="Kola" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Coca Cola 0.5L</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Ichimliklar • SKU: CC001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">4,500 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">7,000 so'm</div>
+<div class="text-xs text-gray-500">32 dona mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 7 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="ichimliklar" data-name="suv">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Clear%20water%20bottle%20plastic%2C%20beverage%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=16&orientation=squarish"
+alt="Suv" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Suv 1.5L</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Ichimliklar • SKU: WT001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">2,000 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">3,000 so'm</div>
+<div class="text-xs text-gray-500">156 dona mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sut mahsulotlari Category -->
+<div class="mb-6" data-category="sut-mahsulotlari">
+<div class="flex items-center justify-between mb-3 cursor-pointer category-header">
+<h3 class="text-base font-semibold text-gray-800">Sut mahsulotlari</h3>
+<div class="flex items-center space-x-2">
+<span class="text-xs text-gray-500">67 mahsulot</span>
+<i class="ri-arrow-down-s-line text-gray-400 transform transition-transform"></i>
+</div>
+</div>
+<div class="space-y-3 category-products">
+<!-- Product Item 8 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="sut-mahsulotlari" data-name="sut">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20milk%20bottle%2C%20dairy%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=17&orientation=squarish"
+alt="Sut" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Sut 1L</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Sut mahsulotlari • SKU: MK001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">6,500 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">9,000 so'm</div>
+<div class="text-xs text-red-500 flex items-center space-x-1">
+<i class="ri-error-warning-line text-xs"></i>
+<span>5 dona mavjud</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 9 -->
+<div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer product-item" data-category="sut-mahsulotlari" data-name="qatiq">
+<div class="flex items-center space-x-3">
+<div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=Fresh%20yogurt%20cup%20container%2C%20dairy%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=18&orientation=squarish"
+alt="Qatiq" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-medium text-gray-800">Qatiq 400g</h4>
+<div class="flex items-center space-x-1">
+<button class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center cursor-pointer edit-btn">
+<i class="ri-edit-line text-gray-600 text-xs"></i>
+</button>
+<button class="w-6 h-6 bg-red-100 rounded flex items-center justify-center cursor-pointer delete-btn">
+<i class="ri-delete-bin-line text-red-600 text-xs"></i>
+</button>
+</div>
+</div>
+<p class="text-xs text-gray-500 mb-2">Sut mahsulotlari • SKU: YG001</p>
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<span class="text-gray-500">Kirim:</span>
+<span class="font-medium text-gray-800">3,500 so'm</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium text-primary">5,000 so'm</div>
+<div class="text-xs text-gray-500">24 dona mavjud</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAB Button -->
+<button class="fixed bottom-20 right-4 w-14 h-14 bg-primary rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button z-40" id="fab-add-product">
+<i class="ri-add-fill text-white text-2xl"></i>
+</button>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
+<div class="grid grid-cols-5 h-16">
+<a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-home-5-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Bosh sahifa</span>
+</a>
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-shopping-bag-3-fill text-primary"></i>
+</div>
+<span class="text-xs text-primary font-medium">Mahsulotlar</span>
+</button>
+<a href="{% url 'analitika' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-bar-chart-box-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Analitika</span>
+</a>
+<a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-group-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Mijozlar</span>
+</button>
+</a>
+<a href="{`% url 'sozlamalar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-settings-3-line text-gray-400"></i>
+</div>
+<span class="text-xs text-gray-400">Sozlamalar</span>
+</button>
+</a>
+
+</div>
+</nav>
+<script id="search-functionality">
+document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.getElementById('search-input');
+const productItems = document.querySelectorAll('.product-item');
+searchInput.addEventListener('input', function() {
+const searchTerm = this.value.toLowerCase();
+productItems.forEach(item => {
+const productName = item.getAttribute('data-name').toLowerCase();
+const productElement = item.querySelector('h4').textContent.toLowerCase();
+if (productName.includes(searchTerm) || productElement.includes(searchTerm)) {
+item.style.display = 'block';
+item.closest('[data-category]').style.display = 'block';
+} else {
+item.style.display = 'none';
+}
+});
+document.querySelectorAll('[data-category]').forEach(category => {
+const visibleProducts = category.querySelectorAll('.product-item[style="display: block"], .product-item:not([style*="display: none"])');
+if (visibleProducts.length === 0) {
+category.style.display = 'none';
+} else {
+category.style.display = 'block';
+}
+});
+});
+});
+</script>
+<script id="category-filter">
+document.addEventListener('DOMContentLoaded', function() {
+const categoryButtons = document.querySelectorAll('#category-filters button');
+const productItems = document.querySelectorAll('.product-item');
+const categoryGroups = document.querySelectorAll('[data-category]');
+categoryButtons.forEach(button => {
+button.addEventListener('click', function() {
+categoryButtons.forEach(btn => {
+btn.classList.remove('bg-primary', 'text-white');
+btn.classList.add('bg-gray-100', 'text-gray-600');
+});
+this.classList.remove('bg-gray-100', 'text-gray-600');
+this.classList.add('bg-primary', 'text-white');
+const selectedCategory = this.getAttribute('data-category');
+if (selectedCategory === 'all') {
+categoryGroups.forEach(group => {
+group.style.display = 'block';
+});
+productItems.forEach(item => {
+item.style.display = 'block';
+});
+} else {
+categoryGroups.forEach(group => {
+if (group.getAttribute('data-category') === selectedCategory) {
+group.style.display = 'block';
+} else {
+group.style.display = 'none';
+}
+});
+}
+});
+});
+});
+</script>
+<script id="category-toggle">
+document.addEventListener('DOMContentLoaded', function() {
+const categoryHeaders = document.querySelectorAll('.category-header');
+categoryHeaders.forEach(header => {
+header.addEventListener('click', function() {
+const categoryProducts = this.nextElementSibling;
+const arrow = this.querySelector('i');
+if (categoryProducts.style.display === 'none') {
+categoryProducts.style.display = 'block';
+arrow.style.transform = 'rotate(0deg)';
+} else {
+categoryProducts.style.display = 'none';
+arrow.style.transform = 'rotate(-90deg)';
+}
+});
+});
+});
+</script>
+<script id="product-actions">
+document.addEventListener('DOMContentLoaded', function() {
+const editButtons = document.querySelectorAll('.edit-btn');
+const deleteButtons = document.querySelectorAll('.delete-btn');
+editButtons.forEach(button => {
+button.addEventListener('click', function(e) {
+e.stopPropagation();
+const productItem = this.closest('.product-item');
+const productName = productItem.querySelector('h4').textContent;
+showEditForm(productName, productItem);
+});
+});
+deleteButtons.forEach(button => {
+button.addEventListener('click', function(e) {
+e.stopPropagation();
+const productItem = this.closest('.product-item');
+const productName = productItem.querySelector('h4').textContent;
+showDeleteConfirmation(productName, productItem);
+});
+});
+function showEditForm(productName, productItem) {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+modal.innerHTML = `
+<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-semibold text-gray-800">Mahsulotni tahrirlash</h3>
+<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+<i class="ri-close-line text-gray-600"></i>
+</button>
+</div>
+<form class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Mahsulot nomi</label>
+<input type="text" value="${productName}" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Kategoriya</label>
+<div class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none cursor-pointer flex items-center justify-between">
+<span class="text-gray-700">Oziq-ovqat</span>
+<i class="ri-arrow-down-s-line text-gray-400"></i>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Kirim narxi</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Sotuv narxi</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Miqdor</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+</div>
+<button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button">Saqlash</button>
+</form>
+</div>
+`;
+document.body.appendChild(modal);
+const closeButton = modal.querySelector('.close-modal');
+closeButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+function showDeleteConfirmation(productName, productItem) {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+modal.innerHTML = `
+<div class="bg-white rounded-2xl p-6 w-full max-w-sm">
+<div class="text-center mb-6">
+<div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+<i class="ri-delete-bin-line text-red-600 text-2xl"></i>
+</div>
+<h3 class="text-lg font-semibold text-gray-800 mb-2">Mahsulotni o'chirish</h3>
+<p class="text-sm text-gray-600">"${productName}" mahsulotini o'chirishga ishonchingiz komilmi?</p>
+</div>
+<div class="flex space-x-3">
+<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button cancel-btn">Bekor qilish</button>
+<button class="flex-1 bg-red-600 text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button confirm-btn">O'chirish</button>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const cancelButton = modal.querySelector('.cancel-btn');
+const confirmButton = modal.querySelector('.confirm-btn');
+cancelButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+confirmButton.addEventListener('click', function() {
+productItem.style.display = 'none';
+document.body.removeChild(modal);
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+});
+</script>
+<script id="add-product-modal">
+document.addEventListener('DOMContentLoaded', function() {
+const addProductBtn = document.getElementById('add-product-btn');
+const fabAddProduct = document.getElementById('fab-add-product');
+function showAddProductForm() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+modal.innerHTML = `
+<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-semibold text-gray-800">Yangi mahsulot qo'shish</h3>
+<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
+<i class="ri-close-line text-gray-600"></i>
+</button>
+</div>
+<form class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Mahsulot nomi</label>
+<input type="text" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" placeholder="Mahsulot nomini kiriting">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Kategoriya</label>
+<div class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none cursor-pointer flex items-center justify-between">
+<span class="text-gray-500 text-sm">Kategoriyani tanlang</span>
+<i class="ri-arrow-down-s-line text-gray-400"></i>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">SKU kodi</label>
+<input type="text" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" placeholder="Masalan: PR001">
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Kirim narxi</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" placeholder="0">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Sotuv narxi</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" placeholder="0">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Boshlang'ich miqdor</label>
+<input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" placeholder="0">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">O'lchov birligi</label>
+<div class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none cursor-pointer flex items-center justify-between">
+<span class="text-gray-500 text-sm">Birlikni tanlang</span>
+<i class="ri-arrow-down-s-line text-gray-400"></i>
+</div>
+</div>
+<button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button">Saqlash</button>
+</form>
+</div>
+`;
+document.body.appendChild(modal);
+const closeButton = modal.querySelector('.close-modal');
+closeButton.addEventListener('click', function() {
+document.body.removeChild(modal);
+});
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+document.body.removeChild(modal);
+}
+});
+}
+addProductBtn.addEventListener('click', showAddProductForm);
+fabAddProduct.addEventListener('click', showAddProductForm);
+});
+</script>
+<script id="view-toggle">
+document.addEventListener('DOMContentLoaded', function() {
+const viewToggle = document.getElementById('view-toggle');
+let isGridView = true;
+viewToggle.addEventListener('click', function() {
+const productsContainer = document.getElementById('products-container');
+const icon = this.querySelector('i');
+if (isGridView) {
+icon.className = 'ri-list-unordered text-gray-600';
+productsContainer.classList.add('table-view');
+isGridView = false;
+} else {
+icon.className = 'ri-layout-grid-line text-gray-600';
+productsContainer.classList.remove('table-view');
+isGridView = true;
+}
+});
+});
+</script>
+
+</html>
