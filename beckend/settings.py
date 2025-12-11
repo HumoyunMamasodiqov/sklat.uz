@@ -4,7 +4,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-0umegca*)@-jud%z(f&_e4fgitppj(&ly0gc+gwvk6)knrm56-'
-DEBUG = True
+
+# Render SERVER uchun DEBUG = False qilamiz
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "sklatuz.onrender.com",
@@ -19,11 +21,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'frontend',
+
+    'frontend',  # sening apping
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # === Render uchun MUHIM (statiklarni chiqaradi) ===
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -33,7 +40,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'beckend.urls'
-WSGI_APPLICATION = 'beckend.wsgi.application'
 
 TEMPLATES = [
     {
@@ -50,6 +56,9 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'beckend.wsgi.application'
+
+# =============== DATABASE ===============
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -57,6 +66,7 @@ DATABASES = {
     }
 }
 
+# =============== PASSWORD VALIDATION ===============
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -64,23 +74,31 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+
+# =============== GENERAL SETTINGS ===============
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
 
-# ============================
-#  STATIC FILES (Render uchun)
-# ============================
-
+# =============== STATIC FILES (Render) ===============
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # local
-STATIC_ROOT = BASE_DIR / 'staticfiles'    # serverda shu papka yaratiladi
 
-# ============================
-#  MEDIA FILES (MUHIM)
-# ============================
+# Local static folder (static/img, static/css ...)
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# Serverda collectstatic natijasi shu papkaga tushadi
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise uchun maxsus storage
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# =============== MEDIA FILES (Images Upload) ===============
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'   # ❗ to‘g‘rilandi
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# =============== DEFAULT AUTO FIELD ===============
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
