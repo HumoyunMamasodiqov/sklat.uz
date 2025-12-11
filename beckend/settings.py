@@ -42,6 +42,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'beckend.urls'
+WSGI_APPLICATION = 'beckend.wsgi.application'
 
 TEMPLATES = [
     {
@@ -58,7 +59,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'beckend.wsgi.application'
 
 
 # Database
@@ -91,9 +91,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True 
@@ -106,5 +103,4 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'     # server uchun
 
 # ✅ MEDIA FILES
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_ROOT = BASE_DIR / 'media
