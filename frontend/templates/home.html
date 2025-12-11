@@ -6,7 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Sklat.uz | Do'kon Boshqaruv Tizimi</title>
-    <link rel="icon" href="{% static 'img/sklatlogo.png' %}">
+   <!-- Favicon -->
+   <link rel="icon" type="image/png" href="{% static 'img/sklatlogo.png' %}">
+
+   <!-- Home Screen Icon (MUHIM) -->
+   <link rel="apple-touch-icon" sizes="512x512" href="{% static 'img/sklatlogo.png' %}">
+
+   <!-- Manifest (MUHIM) -->
+   <link rel="manifest" href="{% static 'manifest.json' %}">
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">

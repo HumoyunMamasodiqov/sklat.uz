@@ -1,0 +1,16 @@
+{
+    "name": "Sklat.uz",
+    "short_name": "Sklat",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0078E8",
+    "icons": [
+      {
+        "src": "/static/img/sklatlogo.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
