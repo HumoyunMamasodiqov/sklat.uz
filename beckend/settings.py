@@ -5,13 +5,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-0umegca*)@-jud%z(f&_e4fgitppj(&ly0gc+gwvk6)knrm56-'
 
-# Render SERVER uchun DEBUG = False qilamiz
-DEBUG = False
+# Mahalliy ishlash uchun DEBUG=True, production uchun False
+DEBUG = True  # Mahalliy test uchun True qiling
 
 ALLOWED_HOSTS = [
     "sklatuz.onrender.com",
     "localhost",
     "127.0.0.1",
+    "*",  # Barcha hostlar uchun ruxsat (test uchun)
 ]
 
 INSTALLED_APPS = [
@@ -27,10 +28,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
-    # === Render uchun MUHIM (statiklarni chiqaradi) ===
+    
+    # WhiteNoise middleware (STATIC_ROOT bo'lsagina ishlaydi)
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
+    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -41,14 +42,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'beckend.urls'
 
+# TEMPLATES sozlamalarini to'g'rilash
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [
+            BASE_DIR / 'templates',  # Global templates papka
+        ],
+        'APP_DIRS': True,  # App ichidagi templates papkasini qidirish
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',  # MUHIM: request qo'shing
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -74,31 +79,42 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # =============== GENERAL SETTINGS ===============
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'uz'
+TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
 USE_TZ = True
 
-
-# =============== STATIC FILES (Render) ===============
+# =============== STATIC FILES ===============
 STATIC_URL = '/static/'
 
-# Local static folder (static/img, static/css ...)
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# Local static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
-# Serverda collectstatic natijasi shu papkaga tushadi
+# Production uchun collectstatic papkasi
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise uchun maxsus storage
+# WhiteNoise storage (DEBUG=False bo'lganda ishlaydi)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-# =============== MEDIA FILES (Images Upload) ===============
+# =============== MEDIA FILES ===============
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 # =============== DEFAULT AUTO FIELD ===============
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# =============== LOGIN/LOGOUT REDIRECTS ===============
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
+
+# =============== SECURITY (Production uchun) ===============
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklat.uz | Ro'yxatdan o'tish</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.js"></script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-center text-white">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="ri-user-add-line text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold">Yangi hisob</h1>
+            </div>
+            <p class="text-emerald-100">Sklat.uz tizimiga ro'yxatdan o'ting</p>
+        </div>
+
+        <!-- Register Form -->
+        <div class="p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Ro'yxatdan o'tish</h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-3 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+                
+                <div class="space-y-4">
+                    <!-- First Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-user-3-line text-gray-400 mr-2"></i>
+                            Ism
+                        </label>
+                        <input type="text" name="first_name" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="Ismingiz">
+                    </div>
+                    
+                    <!-- Last Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-user-3-line text-gray-400 mr-2"></i>
+                            Familiya
+                        </label>
+                        <input type="text" name="last_name" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="Familiyangiz">
+                    </div>
+                    
+                    <!-- Username -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-user-line text-gray-400 mr-2"></i>
+                            Foydalanuvchi nomi
+                        </label>
+                        <input type="text" name="username" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="Foydalanuvchi nomi">
+                    </div>
+                    
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-mail-line text-gray-400 mr-2"></i>
+                            Email manzil
+                        </label>
+                        <input type="email" name="email" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="email@example.com">
+                    </div>
+                    
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-lock-line text-gray-400 mr-2"></i>
+                            Parol
+                        </label>
+                        <input type="password" name="password" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="Parol (kamida 8 belgi)">
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="ri-lock-line text-gray-400 mr-2"></i>
+                            Parolni tasdiqlash
+                        </label>
+                        <input type="password" name="confirm_password" required
+                               class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition"
+                               placeholder="Parolni qayta kiriting">
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition flex items-center justify-center space-x-2">
+                        <i class="ri-user-add-line"></i>
+                        <span>Ro'yxatdan o'tish</span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Divider -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Yoki</span>
+                </div>
+            </div>
+            
+            <!-- Login Link -->
+            <div class="text-center">
+                <p class="text-sm text-gray-600">
+                    Hisobingiz bormi?
+                    <a href="{% url 'login' %}" class="text-primary font-semibold hover:underline ml-1">
+                        Kirish
+                    </a>
+                </p>
+            </div>
+            
+            <!-- Terms and Conditions -->
+            <div class="mt-6 p-3 bg-gray-50 rounded-lg">
+                <p class="text-xs text-gray-500 text-center">
+                    Ro'yxatdan o'tish orqali siz 
+                    <a href="#" class="text-primary hover:underline">Foydalanish shartlari</a> 
+                    va 
+                    <a href="#" class="text-primary hover:underline">Maxfiylik siyosati</a> 
+                    bilan roziligingizni bildirasiz
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center border-t border-gray-200">
+            <p class="text-xs text-gray-500">
+                © 2024 Sklat.uz | Barcha huquqlar himoyalangan
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Parol tekshiruvi
+        const password = document.querySelector('input[name="password"]');
+        const confirmPassword = document.querySelector('input[name="confirm_password"]');
+        
+        function validatePasswords() {
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.style.borderColor = '#ef4444';
+                confirmPassword.style.boxShadow = '0 0 0 2px rgba(239, 68, 68, 0.2)';
+            } else {
+                confirmPassword.style.borderColor = '';
+                confirmPassword.style.boxShadow = '';
+            }
+        }
+        
+        password.addEventListener('input', validatePasswords);
+        confirmPassword.addEventListener('input', validatePasswords);
+    </script>
+</body>
+</html>

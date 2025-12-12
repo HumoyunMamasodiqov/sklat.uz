@@ -1,646 +1,1149 @@
-
 <!DOCTYPE html>
 <html lang="uz">
     {% load static %}
-<head><script src="https://static.readdy.ai/static/e.js"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Sklat.uz | Do'kon Boshqaruv Tizimi</title>
+<head>
+    <script src="https://static.readdy.ai/static/e.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklat.uz | Sozlamalar</title>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'img/sklatlogo.png' %}">
-
-    <!-- Home Screen Icon (MUHIM) -->
     <link rel="apple-touch-icon" sizes="512x512" href="{% static 'img/sklatlogo.png' %}">
-
-    <!-- Manifest (MUHIM) -->
     <link rel="manifest" href="{% static 'manifest.json' %}">
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
-<style>
-:where([class^="ri-"])::before { content: "\f3c2"; }
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-input[type="number"] {
--moz-appearance: textfield;
-}
-</style>
+    
+    <!-- CSS va JavaScript kutubxonalari -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fontlar va ikonlar -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        /* Animatsiyalar */
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Toggle switch styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3B82F6;
+        }
+        
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3B82F6;
+        }
+        
+        /* Form validation styles */
+        .error-message {
+            color: #EF4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .error-input {
+            border-color: #EF4444 !important;
+            background-color: #FEF2F2 !important;
+        }
+    </style>
 </head>
+
 <body class="bg-gray-50">
-<!-- Header -->
-<header class="fixed top-0 w-full bg-white shadow-sm z-50">
-<div class="flex items-center justify-between px-4 py-3">
-<div class="flex items-center space-x-3">
-<a href="{% url 'home' %}" data-readdy="true" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer">
-<i class="ri-arrow-left-line text-gray-600"></i>
-</a>
-<h1 class="text-lg font-semibold text-gray-800">Sozlamalar</h1>
-</div>
-<div class="flex items-center space-x-3">
-<button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" id="help-btn">
-<i class="ri-question-line text-gray-600"></i>
-</button>
-</div>
-</div>
-</header>
-
-<!-- Profile Section -->
-<section class="pt-20 px-4 pb-6">
-<div class="bg-gradient-to-r from-primary to-blue-600 rounded-xl p-6 text-white">
-<div class="flex items-center space-x-4">
-<div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-<span class="text-white font-bold text-xl">AD</span>
-</div>
-<div class="flex-1">
-<h2 class="text-lg font-semibold">Aziz Davronov</h2>
-<p class="text-blue-100 text-sm">aziz.davronov@gmail.com</p>
-<p class="text-blue-100 text-sm">+998 90 123 45 67</p>
-</div>
-<button class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center cursor-pointer" id="edit-profile-btn">
-<i class="ri-edit-line text-white"></i>
-</button>
-</div>
-</div>
-</section>
-
-<!-- Settings Menu -->
-<section class="px-4 pb-6">
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
-<div class="px-4 py-3 border-b border-gray-100">
-<h3 class="text-base font-semibold text-gray-800">Asosiy sozlamalar</h3>
-</div>
-<div class="divide-y divide-gray-100">
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="security-btn">
-<div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-<i class="ri-shield-check-line text-red-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Xavfsizlik sozlamalari</h4>
-<p class="text-xs text-gray-500">Parol va ikki faktorli autentifikatsiya</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="notifications-btn">
-<div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-<i class="ri-notification-3-line text-yellow-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Bildirishnoma sozlamalari</h4>
-<p class="text-xs text-gray-500">Push va email xabarlar</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="language-btn">
-<div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-<i class="ri-global-line text-blue-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Til tanlash</h4>
-<p class="text-xs text-gray-500">O'zbek tili</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="currency-btn">
-<div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-<i class="ri-money-dollar-circle-line text-green-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Valyuta sozlamalari</h4>
-<p class="text-xs text-gray-500">O'zbek so'mi (UZS)</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-</div>
-</div>
-</section>
-
-<!-- Data Management -->
-<section class="px-4 pb-6">
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
-<div class="px-4 py-3 border-b border-gray-100">
-<h3 class="text-base font-semibold text-gray-800">Ma'lumotlar boshqaruvi</h3>
-</div>
-<div class="divide-y divide-gray-100">
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="export-btn">
-<div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-<i class="ri-download-cloud-2-line text-purple-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Ma'lumotlarni eksport qilish</h4>
-<p class="text-xs text-gray-500">Excel, CSV formatida yuklab olish</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="import-btn">
-<div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-<i class="ri-upload-cloud-2-line text-indigo-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Ma'lumotlarni import qilish</h4>
-<p class="text-xs text-gray-500">Fayl yuklash va ma'lumot kiritish</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="backup-btn">
-<div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-<i class="ri-database-2-line text-teal-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Zaxira nusxa yaratish</h4>
-<p class="text-xs text-gray-500">Ma'lumotlarni saqlash va qayta tiklash</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-</div>
-</div>
-</section>
-
-<!-- Help & Support -->
-<section class="px-4 pb-6">
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
-<div class="px-4 py-3 border-b border-gray-100">
-<h3 class="text-base font-semibold text-gray-800">Yordam va qo'llab-quvvatlash</h3>
-</div>
-<div class="divide-y divide-gray-100">
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="help-center-btn">
-<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-<i class="ri-customer-service-2-line text-orange-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Yordam markazi</h4>
-<p class="text-xs text-gray-500">Qo'llanma va yo'riqnomalar</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="faq-btn">
-<div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-<i class="ri-questionnaire-line text-pink-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Tez-tez so'raladigan savollar</h4>
-<p class="text-xs text-gray-500">FAQ bo'limi</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="support-btn">
-<div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
-<i class="ri-headphone-line text-cyan-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Texnik qo'llab-quvvatlash</h4>
-<p class="text-xs text-gray-500">Mutaxassislar bilan bog'lanish</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-<button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50" id="about-btn">
-<div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-<i class="ri-information-line text-gray-600"></i>
-</div>
-<div class="flex-1 text-left">
-<h4 class="text-sm font-medium text-gray-800">Ilova haqida</h4>
-<p class="text-xs text-gray-500">Versiya 2.1.4</p>
-</div>
-<div class="w-5 h-5 flex items-center justify-center">
-<i class="ri-arrow-right-s-line text-gray-400"></i>
-</div>
-</button>
-</div>
-</div>
-</section>
-
-<!-- Logout Section -->
-<section class="px-4 pb-24">
-<button class="w-full bg-red-500 text-white py-4 rounded-xl font-medium flex items-center justify-center space-x-2 cursor-pointer !rounded-button" id="logout-btn">
-<i class="ri-logout-box-line text-lg"></i>
-<span>Dasturdan chiqish</span>
-</button>
-</section>
-
-<!-- Bottom Navigation -->
-<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
-    <div class="grid grid-cols-5 h-16">
-        <a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <i class="ri-home-5-line text-gray-400"></i>
+    <!-- Xabarlar -->
+    {% if messages %}
+    <div class="fixed top-16 left-4 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} bg-{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% elif message.tags == 'warning' %}orange{% else %}blue{% endif %}-500 text-white p-3 rounded-lg shadow-lg slide-in">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="ri-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}error-warning{% elif message.tags == 'warning' %}alert{% else %}information{% endif %}-line"></i>
+                    <span class="text-sm font-medium">{{ message }}</span>
+                </div>
+                <button class="close-message text-white hover:text-gray-200">
+                    <i class="ri-close-line"></i>
+                </button>
             </div>
-            <span class="text-xs text-gray-400">Bosh sahifa</span>
-        </a>
-        <a href="{% url 'mahsulotlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-        <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <i class="ri-shopping-bag-3-line text-gray-400"></i>
-            </div>
-            <span class="text-xs text-gray-400">Mahsulotlar</span>
-        </button>
-    </a>
-
-        <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <i class="ri-bar-chart-box-fill text-gray-400 "></i>
-            </div>
-            <span class="text-xs  font-medium  text-gray-400">Analitika</span>
-        </button>
-  
-        <a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-        <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <i class="ri-group-line text-gray-400"></i>
-            </div>
-            <span class="text-xs text-gray-400">Mijozlar</span>
-        </button>
-    </a>
-
-        <a href="{% url 'sozlamalar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-        <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <i class="ri-settings-3-line text-primary"></i>
-            </div>
-            <span class="text-xs text-primary">Sozlamalar</span>
-        </button>
-    </a>
+        </div>
+        {% endfor %}
     </div>
-</nav>
-
-<script id="profile-edit-modal">
-document.addEventListener('DOMContentLoaded', function() {
-const editProfileBtn = document.getElementById('edit-profile-btn');
-editProfileBtn.addEventListener('click', function() {
-showEditProfileModal();
-});
-
-function showEditProfileModal() {
-const modal = document.createElement('div');
-modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
-modal.innerHTML = `
-<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-lg font-semibold text-gray-800">Profil ma'lumotlarini tahrirlash</h3>
-<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
-<i class="ri-close-line text-gray-600"></i>
-</button>
-</div>
-<div class="space-y-4">
-<div class="flex justify-center mb-6">
-<div class="relative">
-<div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
-<span class="text-white font-bold text-2xl">AD</span>
-</div>
-<button class="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer">
-<i class="ri-camera-line text-gray-600 text-sm"></i>
-</button>
-</div>
-</div>
-<div>
-<label class="block text-sm font-medium text-gray-700 mb-2">Ism va familiya</label>
-<input type="text" value="Aziz Davronov" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="profile-name">
-</div>
-<div>
-<label class="block text-sm font-medium text-gray-700 mb-2">Email manzil</label>
-<input type="email" value="aziz.davronov@gmail.com" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="profile-email">
-</div>
-<div>
-<label class="block text-sm font-medium text-gray-700 mb-2">Telefon raqami</label>
-<input type="tel" value="+998 90 123 45 67" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none text-sm" id="profile-phone">
-</div>
-<div class="flex space-x-3 pt-4">
-<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal">Bekor qilish</button>
-<button class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button save-profile">Saqlash</button>
-</div>
-</div>
-</div>
-`;
-document.body.appendChild(modal);
-
-const closeButtons = modal.querySelectorAll('.close-modal');
-const saveButton = modal.querySelector('.save-profile');
-
-closeButtons.forEach(button => {
-button.addEventListener('click', function() {
-document.body.removeChild(modal);
-});
-});
-
-saveButton.addEventListener('click', function() {
-document.body.removeChild(modal);
-showNotification('Profil ma\'lumotlari yangilandi!', 'success');
-});
-
-modal.addEventListener('click', function(e) {
-if (e.target === modal) {
-document.body.removeChild(modal);
-}
-});
-}
-});
-</script>
-
-<script id="security-settings-modal">
-document.addEventListener('DOMContentLoaded', function() {
-const securityBtn = document.getElementById('security-btn');
-securityBtn.addEventListener('click', function() {
-showSecurityModal();
-});
-
-function showSecurityModal() {
-const modal = document.createElement('div');
-modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
-modal.innerHTML = `
-<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-lg font-semibold text-gray-800">Xavfsizlik sozlamalari</h3>
-<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
-<i class="ri-close-line text-gray-600"></i>
-</button>
-</div>
-<div class="space-y-4">
-<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-<div>
-<h4 class="text-sm font-medium text-gray-800">Parolni o'zgartirish</h4>
-<p class="text-xs text-gray-500">Oxirgi marta 2 oy oldin o'zgartirilgan</p>
-</div>
-<button class="px-4 py-2 bg-primary text-white rounded-lg text-sm cursor-pointer !rounded-button">O'zgartirish</button>
-</div>
-<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-<div>
-<h4 class="text-sm font-medium text-gray-800">Ikki faktorli autentifikatsiya</h4>
-<p class="text-xs text-gray-500">Qo'shimcha xavfsizlik darajasi</p>
-</div>
-<div class="relative">
-<input type="checkbox" class="opacity-0 absolute" id="two-factor-toggle">
-<div class="w-12 h-6 bg-gray-300 rounded-full cursor-pointer toggle-bg">
-<div class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-200 translate-x-0.5 toggle-dot"></div>
-</div>
-</div>
-</div>
-<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-<div>
-<h4 class="text-sm font-medium text-gray-800">Kirish tarixi</h4>
-<p class="text-xs text-gray-500">Oxirgi faollik va qurilmalar</p>
-</div>
-<button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm cursor-pointer !rounded-button">Ko'rish</button>
-</div>
-<div class="pt-4">
-<button class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal">Saqlash</button>
-</div>
-</div>
-</div>
-`;
-document.body.appendChild(modal);
-
-const closeButtons = modal.querySelectorAll('.close-modal');
-const toggleInput = modal.querySelector('#two-factor-toggle');
-const toggleBg = modal.querySelector('.toggle-bg');
-const toggleDot = modal.querySelector('.toggle-dot');
-
-closeButtons.forEach(button => {
-button.addEventListener('click', function() {
-document.body.removeChild(modal);
-});
-});
-
-toggleBg.addEventListener('click', function() {
-toggleInput.checked = !toggleInput.checked;
-if (toggleInput.checked) {
-toggleBg.classList.add('bg-primary');
-toggleBg.classList.remove('bg-gray-300');
-toggleDot.classList.add('translate-x-6');
-toggleDot.classList.remove('translate-x-0.5');
-} else {
-toggleBg.classList.remove('bg-primary');
-toggleBg.classList.add('bg-gray-300');
-toggleDot.classList.remove('translate-x-6');
-toggleDot.classList.add('translate-x-0.5');
-}
-});
-
-modal.addEventListener('click', function(e) {
-if (e.target === modal) {
-document.body.removeChild(modal);
-}
-});
-}
-});
-</script>
-
-<script id="language-settings-modal">
-document.addEventListener('DOMContentLoaded', function() {
-const languageBtn = document.getElementById('language-btn');
-languageBtn.addEventListener('click', function() {
-showLanguageModal();
-});
-
-function showLanguageModal() {
-const modal = document.createElement('div');
-modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
-modal.innerHTML = `
-<div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-lg font-semibold text-gray-800">Til tanlash</h3>
-<button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal">
-<i class="ri-close-line text-gray-600"></i>
-</button>
-</div>
-<div class="space-y-2">
-<label class="flex items-center space-x-3 p-4 bg-primary bg-opacity-10 rounded-lg cursor-pointer">
-<input type="radio" name="language" value="uz" checked class="opacity-0 absolute">
-<div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-<div class="w-2 h-2 bg-white rounded-full"></div>
-</div>
-<div class="flex-1">
-<span class="text-sm font-medium text-gray-800">O'zbek tili</span>
-</div>
-</label>
-<label class="flex items-center space-x-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer">
-<input type="radio" name="language" value="ru" class="opacity-0 absolute">
-<div class="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
-<div class="flex-1">
-<span class="text-sm font-medium text-gray-800">Русский язык</span>
-</div>
-</label>
-<label class="flex items-center space-x-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer">
-<input type="radio" name="language" value="en" class="opacity-0 absolute">
-<div class="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
-<div class="flex-1">
-<span class="text-sm font-medium text-gray-800">English</span>
-</div>
-</label>
-</div>
-<div class="pt-6">
-<button class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal">Saqlash</button>
-</div>
-</div>
-`;
-document.body.appendChild(modal);
-
-const closeButtons = modal.querySelectorAll('.close-modal');
-closeButtons.forEach(button => {
-button.addEventListener('click', function() {
-document.body.removeChild(modal);
-showNotification('Til sozlamalari saqlandi!', 'success');
-});
-});
-
-modal.addEventListener('click', function(e) {
-if (e.target === modal) {
-document.body.removeChild(modal);
-}
-});
-}
-});
-</script>
-
-<script id="logout-confirmation">
-document.addEventListener('DOMContentLoaded', function() {
-const logoutBtn = document.getElementById('logout-btn');
-logoutBtn.addEventListener('click', function() {
-showLogoutConfirmation();
-});
-
-function showLogoutConfirmation() {
-const modal = document.createElement('div');
-modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-modal.innerHTML = `
-<div class="bg-white rounded-2xl p-6 w-full max-w-sm transform scale-100 transition-transform duration-300">
-<div class="text-center">
-<div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-<i class="ri-logout-box-line text-red-600 text-2xl"></i>
-</div>
-<h3 class="text-lg font-semibold text-gray-800 mb-2">Dasturdan chiqish</h3>
-<p class="text-sm text-gray-600 mb-6">Haqiqatan ham dasturdan chiqmoqchimisiz?</p>
-<div class="flex space-x-3">
-<button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button cancel-logout">Bekor qilish</button>
-<button class="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button confirm-logout">Chiqish</button>
-</div>
-</div>
-</div>
-`;
-document.body.appendChild(modal);
-
-const cancelBtn = modal.querySelector('.cancel-logout');
-const confirmBtn = modal.querySelector('.confirm-logout');
-
-cancelBtn.addEventListener('click', function() {
-document.body.removeChild(modal);
-});
-
-confirmBtn.addEventListener('click', function() {
-document.body.removeChild(modal);
-showNotification('Dasturdan muvaffaqiyatli chiqdingiz!', 'success');
-setTimeout(() => {
-window.location.reload();
-}, 1500);
-});
-
-modal.addEventListener('click', function(e) {
-if (e.target === modal) {
-document.body.removeChild(modal);
-}
-});
-}
-});
-</script>
-
-<script id="other-settings-modals">
-document.addEventListener('DOMContentLoaded', function() {
-const notificationsBtn = document.getElementById('notifications-btn');
-const currencyBtn = document.getElementById('currency-btn');
-const exportBtn = document.getElementById('export-btn');
-const importBtn = document.getElementById('import-btn');
-const backupBtn = document.getElementById('backup-btn');
-const helpCenterBtn = document.getElementById('help-center-btn');
-const faqBtn = document.getElementById('faq-btn');
-const supportBtn = document.getElementById('support-btn');
-const aboutBtn = document.getElementById('about-btn');
-
-notificationsBtn.addEventListener('click', function() {
-showNotification('Bildirishnoma sozlamalari ochildi!', 'info');
-});
-
-currencyBtn.addEventListener('click', function() {
-showNotification('Valyuta sozlamalari ochildi!', 'info');
-});
-
-exportBtn.addEventListener('click', function() {
-showNotification('Ma\'lumotlar eksport qilindi!', 'success');
-});
-
-importBtn.addEventListener('click', function() {
-showNotification('Ma\'lumotlar import qilindi!', 'success');
-});
-
-backupBtn.addEventListener('click', function() {
-showNotification('Zaxira nusxa yaratildi!', 'success');
-});
-
-helpCenterBtn.addEventListener('click', function() {
-showNotification('Yordam markazi ochildi!', 'info');
-});
-
-faqBtn.addEventListener('click', function() {
-showNotification('FAQ bo\'limi ochildi!', 'info');
-});
-
-supportBtn.addEventListener('click', function() {
-showNotification('Qo\'llab-quvvatlash bilan bog\'lanish!', 'info');
-});
-
-aboutBtn.addEventListener('click', function() {
-showNotification('Ilova haqida ma\'lumot!', 'info');
-});
-});
-</script>
-
-<script id="notification-system">
-function showNotification(message, type) {
-const notification = document.createElement('div');
-notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-type === 'success' ? 'bg-green-500 text-white' :
-type === 'info' ? 'bg-blue-500 text-white' :
-type === 'error' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'
-}`;
-notification.innerHTML = `
-<div class="flex items-center space-x-2">
-<i class="ri-${type === 'success' ? 'check' : type === 'info' ? 'information' : type === 'error' ? 'error-warning' : 'notification'}-line"></i>
-<span class="text-sm">${message}</span>
-</div>
-`;
-document.body.appendChild(notification);
-
-setTimeout(() => {
-notification.style.opacity = '0';
-setTimeout(() => {
-if (document.body.contains(notification)) {
-document.body.removeChild(notification);
-}
-}, 300);
-}, 3000);
-}
-</script>
-
+    {% endif %}
+    
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-white shadow-sm z-40">
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'home' %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+                    <i class="ri-arrow-left-line text-gray-600"></i>
+                </a>
+                <h1 class="text-lg font-semibold text-gray-800">Sozlamalar</h1>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors" id="help-btn" onclick="showHelpModal()">
+                    <i class="ri-question-line text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Profile Section -->
+    <section class="pt-20 px-4 pb-6">
+        <div class="bg-gradient-to-r from-primary to-blue-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30">
+                    <span class="text-white font-bold text-xl">
+                        {% if user.first_name and user.last_name %}
+                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">
+                        {% if user.get_full_name %}
+                            {{ user.get_full_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h2>
+                    <p class="text-blue-100 text-sm">{{ user.email }}</p>
+                    {% if user.date_joined %}
+                    <p class="text-blue-100 text-xs opacity-80 mt-1">
+                        Ro'yxatdan o'tgan: {{ user.date_joined|date:"d.m.Y" }}
+                    </p>
+                    {% endif %}
+                </div>
+                <button class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center cursor-pointer hover:bg-opacity-30 transition-colors backdrop-blur-sm" id="edit-profile-btn">
+                    <i class="ri-edit-line text-white"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Settings Menu -->
+    <section class="px-4 pb-6">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100">
+                <h3 class="text-base font-semibold text-gray-800">Asosiy sozlamalar</h3>
+            </div>
+            <div class="divide-y divide-gray-100">
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="security-btn">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-shield-check-line text-red-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Xavfsizlik sozlamalari</h4>
+                        <p class="text-xs text-gray-500">Parol va ikki faktorli autentifikatsiya</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="notifications-btn">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-notification-3-line text-yellow-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Bildirishnoma sozlamalari</h4>
+                        <p class="text-xs text-gray-500">Push va email xabarlar</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="language-btn">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-global-line text-blue-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Til tanlash</h4>
+                        <p class="text-xs text-gray-500">O'zbek tili</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="currency-btn">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-money-dollar-circle-line text-green-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Valyuta sozlamalari</h4>
+                        <p class="text-xs text-gray-500">O'zbek so'mi (UZS)</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Data Management -->
+    <section class="px-4 pb-6">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100">
+                <h3 class="text-base font-semibold text-gray-800">Ma'lumotlar boshqaruvi</h3>
+            </div>
+            <div class="divide-y divide-gray-100">
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="export-btn">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-download-cloud-2-line text-purple-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Ma'lumotlarni eksport qilish</h4>
+                        <p class="text-xs text-gray-500">Excel, CSV formatida yuklab olish</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="import-btn">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-upload-cloud-2-line text-indigo-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Ma'lumotlarni import qilish</h4>
+                        <p class="text-xs text-gray-500">Fayl yuklash va ma'lumot kiritish</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="backup-btn">
+                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-database-2-line text-teal-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Zaxira nusxa yaratish</h4>
+                        <p class="text-xs text-gray-500">Ma'lumotlarni saqlash va qayta tiklash</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Help & Support -->
+    <section class="px-4 pb-6">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100">
+                <h3 class="text-base font-semibold text-gray-800">Yordam va qo'llab-quvvatlash</h3>
+            </div>
+            <div class="divide-y divide-gray-100">
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="help-center-btn">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-customer-service-2-line text-orange-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Yordam markazi</h4>
+                        <p class="text-xs text-gray-500">Qo'llanma va yo'riqnomalar</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="faq-btn">
+                    <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-questionnaire-line text-pink-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Tez-tez so'raladigan savollar</h4>
+                        <p class="text-xs text-gray-500">FAQ bo'limi</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="support-btn">
+                    <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-headphone-line text-cyan-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Texnik qo'llab-quvvatlash</h4>
+                        <p class="text-xs text-gray-500">Mutaxassislar bilan bog'lanish</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" id="about-btn">
+                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-information-line text-gray-600"></i>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <h4 class="text-sm font-medium text-gray-800">Ilova haqida</h4>
+                        <p class="text-xs text-gray-500">Versiya 2.1.4</p>
+                    </div>
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Logout Section -->
+    <section class="px-4 pb-24">
+        <a href="{% url 'logout' %}">
+            <button class="w-full bg-red-500 text-white py-4 rounded-xl font-medium flex items-center justify-center space-x-2 cursor-pointer !rounded-button hover:bg-red-600 transition-colors" id="logout-btn">
+                <i class="ri-logout-box-line text-lg"></i>
+                <span>Dasturdan chiqish</span>
+            </button>
+        </a>
+    </section>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-30">
+        <div class="grid grid-cols-5 h-16">
+            <a href="{% url 'home' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-home-5-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Bosh sahifa</span>
+            </a>
+            
+            <a href="{% url 'mahsulotlar' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-shopping-bag-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mahsulotlar</span>
+            </a>
+            
+            <a href="{% url 'analitika' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-bar-chart-box-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Analitika</span>
+            </a>
+            
+            <a href="{% url 'mijozlar' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-group-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mijozlar</span>
+            </a>
+            
+            <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer active-nav">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-settings-3-fill text-primary"></i>
+                </div>
+                <span class="text-xs text-primary font-medium">Sozlamalar</span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Profile Edit Modal Template -->
+    <div id="profile-edit-modal-template" class="hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
+            <div class="bg-white w-full rounded-t-2xl p-6 slide-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800">Profil ma'lumotlarini tahrirlash</h3>
+                    <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-modal hover:bg-gray-200 transition-colors">
+                        <i class="ri-close-line text-gray-600"></i>
+                    </button>
+                </div>
+                <form id="profile-edit-form" method="POST" action="{% url 'sozlamalar' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_profile" value="true">
+                    
+                    <div class="flex justify-center mb-6">
+                        <div class="relative">
+                            <div class="w-20 h-20 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-2xl" id="avatar-initials">
+                                    {% if user.first_name and user.last_name %}
+                                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                    {% else %}
+                                        {{ user.username|first|upper }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <button type="button" class="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+                                <i class="ri-camera-line text-gray-600 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ism</label>
+                        <input type="text" name="first_name" value="{{ user.first_name }}" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Ismingiz">
+                        <div class="error-message" id="first-name-error"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Familiya</label>
+                        <input type="text" name="last_name" value="{{ user.last_name }}" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Familiyangiz">
+                        <div class="error-message" id="last-name-error"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email manzil</label>
+                        <input type="email" name="email" value="{{ user.email }}" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="email@example.com">
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button type="button" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-modal hover:bg-gray-200 transition-colors">Bekor qilish</button>
+                        <button type="submit" class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button hover:bg-blue-600 transition-colors">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Modal Template -->
+    <div id="change-password-modal-template" class="hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
+            <div class="bg-white w-full rounded-t-2xl p-6 slide-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800">Parolni o'zgartirish</h3>
+                    <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-password-modal hover:bg-gray-200 transition-colors">
+                        <i class="ri-close-line text-gray-600"></i>
+                    </button>
+                </div>
+                <form id="change-password-form" method="POST" action="{% url 'sozlamalar' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="change_password" value="true">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hozirgi parol</label>
+                        <input type="password" name="old_password" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Hozirgi parolingiz">
+                        <div class="error-message" id="old-password-error"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Yangi parol</label>
+                        <input type="password" name="new_password" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Yangi parol (kamida 8 ta belgi)">
+                        <div class="error-message" id="new-password-error"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Yangi parolni tasdiqlang</label>
+                        <input type="password" name="confirm_password" 
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Yangi parolni takrorlang">
+                        <div class="error-message" id="confirm-password-error"></div>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500 mt-2">
+                        <i class="ri-information-line mr-1"></i>
+                        Parol kamida 8 ta belgidan iborat bo'lishi va raqam, katta va kichik harflarni o'z ichiga olishi kerak
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button type="button" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-password-modal hover:bg-gray-200 transition-colors">Bekor qilish</button>
+                        <button type="submit" class="flex-1 bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button hover:bg-blue-600 transition-colors">Parolni yangilash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Help Modal Template -->
+    <div id="help-modal-template" class="hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
+            <div class="bg-white w-full rounded-t-2xl p-6 slide-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800">Yordam va qo'llab-quvvatlash</h3>
+                    <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-help-modal hover:bg-gray-200 transition-colors">
+                        <i class="ri-close-line text-gray-600"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-600">
+                        Agar sizda ilova bilan bog'liq savollar bo'lsa, quyidagi manzillar orqali biz bilan bog'lanishingiz mumkin:
+                    </p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="ri-phone-line text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Telefon raqam</h4>
+                                <p class="text-xs text-gray-500">+998 90 123 45 67</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="ri-mail-line text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Email manzil</h4>
+                                <p class="text-xs text-gray-500">support@sklat.uz</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="ri-telegram-line text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">Telegram kanal</h4>
+                                <p class="text-xs text-gray-500">@sklat_support</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button close-help-modal hover:bg-blue-600 transition-colors">Tushunarli</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // DOM yuklanganda
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close message buttons
+            const closeMessageButtons = document.querySelectorAll('.close-message');
+            closeMessageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const alert = this.closest('.alert');
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
+                    }, 300);
+                });
+            });
+            
+            // Auto-hide messages after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
+                    }, 300);
+                });
+            }, 5000);
+            
+            // Edit profile button
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            editProfileBtn.addEventListener('click', showEditProfileModal);
+            
+            // Security settings button
+            const securityBtn = document.getElementById('security-btn');
+            securityBtn.addEventListener('click', showSecurityModal);
+            
+            // Language settings button
+            const languageBtn = document.getElementById('language-btn');
+            languageBtn.addEventListener('click', showLanguageModal);
+            
+            // Other buttons
+            const notificationsBtn = document.getElementById('notifications-btn');
+            const currencyBtn = document.getElementById('currency-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const backupBtn = document.getElementById('backup-btn');
+            const helpCenterBtn = document.getElementById('help-center-btn');
+            const faqBtn = document.getElementById('faq-btn');
+            const supportBtn = document.getElementById('support-btn');
+            const aboutBtn = document.getElementById('about-btn');
+            
+            // Attach event listeners
+            if (notificationsBtn) notificationsBtn.addEventListener('click', () => showComingSoon('Bildirishnoma sozlamalari'));
+            if (currencyBtn) currencyBtn.addEventListener('click', () => showComingSoon('Valyuta sozlamalari'));
+            if (exportBtn) exportBtn.addEventListener('click', () => showComingSoon('Eksport qilish'));
+            if (importBtn) importBtn.addEventListener('click', () => showComingSoon('Import qilish'));
+            if (backupBtn) backupBtn.addEventListener('click', () => showComingSoon('Zaxira nusxa yaratish'));
+            if (helpCenterBtn) helpCenterBtn.addEventListener('click', () => showComingSoon('Yordam markazi'));
+            if (faqBtn) faqBtn.addEventListener('click', () => showComingSoon('FAQ bo\'limi'));
+            if (supportBtn) supportBtn.addEventListener('click', showHelpModal);
+            if (aboutBtn) aboutBtn.addEventListener('click', () => showAboutModal());
+            
+            // Avatar initials update on name change
+            const firstNameInput = document.querySelector('input[name="first_name"]');
+            const lastNameInput = document.querySelector('input[name="last_name"]');
+            const avatarInitials = document.getElementById('avatar-initials');
+            
+            if (firstNameInput && lastNameInput && avatarInitials) {
+                function updateAvatarInitials() {
+                    const firstName = firstNameInput.value || '';
+                    const lastName = lastNameInput.value || '';
+                    
+                    if (firstName || lastName) {
+                        const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                        avatarInitials.textContent = initials;
+                    } else {
+                        avatarInitials.textContent = '{{ user.username|first|upper }}';
+                    }
+                }
+                
+                firstNameInput.addEventListener('input', updateAvatarInitials);
+                lastNameInput.addEventListener('input', updateAvatarInitials);
+            }
+        });
+        
+        // Modal functions
+        function showEditProfileModal() {
+            const template = document.getElementById('profile-edit-modal-template');
+            const modalHTML = template.innerHTML;
+            
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            modalDiv.id = 'profile-edit-modal';
+            
+            document.body.appendChild(modalDiv);
+            
+            // Event listeners
+            const closeButtons = modalDiv.querySelectorAll('.close-modal');
+            const form = modalDiv.querySelector('#profile-edit-form');
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    document.body.removeChild(modalDiv);
+                });
+            });
+            
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset errors
+                clearErrors();
+                
+                // Get form values
+                const firstName = form.querySelector('input[name="first_name"]').value.trim();
+                const lastName = form.querySelector('input[name="last_name"]').value.trim();
+                const email = form.querySelector('input[name="email"]').value.trim();
+                
+                let isValid = true;
+                
+                // Validate first name
+                if (!firstName) {
+                    showError('first-name-error', 'Ism kiritilishi shart');
+                    form.querySelector('input[name="first_name"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                // Validate last name
+                if (!lastName) {
+                    showError('last-name-error', 'Familiya kiritilishi shart');
+                    form.querySelector('input[name="last_name"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                // Validate email
+                if (!email) {
+                    showError('email-error', 'Email kiritilishi shart');
+                    form.querySelector('input[name="email"]').classList.add('error-input');
+                    isValid = false;
+                } else if (!isValidEmail(email)) {
+                    showError('email-error', 'Noto\'g\'ri email format');
+                    form.querySelector('input[name="email"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    // Submit form via AJAX
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.body.removeChild(modalDiv);
+                            showNotification(data.message, 'success');
+                            // Update profile info on page
+                            updateProfileInfo(firstName, lastName, email);
+                        } else {
+                            showError('form-error', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('form-error', 'Xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
+                    });
+                }
+            });
+            
+            modalDiv.addEventListener('click', function(e) {
+                if (e.target === modalDiv) {
+                    document.body.removeChild(modalDiv);
+                }
+            });
+        }
+        
+        function showSecurityModal() {
+            const template = document.getElementById('change-password-modal-template');
+            const modalHTML = template.innerHTML;
+            
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            modalDiv.id = 'change-password-modal';
+            
+            document.body.appendChild(modalDiv);
+            
+            // Event listeners
+            const closeButtons = modalDiv.querySelectorAll('.close-password-modal');
+            const form = modalDiv.querySelector('#change-password-form');
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    document.body.removeChild(modalDiv);
+                });
+            });
+            
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset errors
+                clearErrors();
+                
+                // Get form values
+                const oldPassword = form.querySelector('input[name="old_password"]').value;
+                const newPassword = form.querySelector('input[name="new_password"]').value;
+                const confirmPassword = form.querySelector('input[name="confirm_password"]').value;
+                
+                let isValid = true;
+                
+                // Validate old password
+                if (!oldPassword) {
+                    showError('old-password-error', 'Hozirgi parol kiritilishi shart');
+                    form.querySelector('input[name="old_password"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                // Validate new password
+                if (!newPassword) {
+                    showError('new-password-error', 'Yangi parol kiritilishi shart');
+                    form.querySelector('input[name="new_password"]').classList.add('error-input');
+                    isValid = false;
+                } else if (newPassword.length < 8) {
+                    showError('new-password-error', 'Parol kamida 8 ta belgidan iborat bo\'lishi kerak');
+                    form.querySelector('input[name="new_password"]').classList.add('error-input');
+                    isValid = false;
+                } else if (!isStrongPassword(newPassword)) {
+                    showError('new-password-error', 'Parol raqam, katta va kichik harflarni o\'z ichiga olishi kerak');
+                    form.querySelector('input[name="new_password"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                // Validate confirm password
+                if (!confirmPassword) {
+                    showError('confirm-password-error', 'Parolni tasdiqlang');
+                    form.querySelector('input[name="confirm_password"]').classList.add('error-input');
+                    isValid = false;
+                } else if (newPassword !== confirmPassword) {
+                    showError('confirm-password-error', 'Parollar mos kelmadi');
+                    form.querySelector('input[name="confirm_password"]').classList.add('error-input');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    // Submit form via AJAX
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.body.removeChild(modalDiv);
+                            showNotification(data.message, 'success');
+                            // Redirect to login page after successful password change
+                            setTimeout(() => {
+                                window.location.href = "{% url 'login' %}";
+                            }, 1500);
+                        } else {
+                            showError('form-error', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('form-error', 'Xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
+                    });
+                }
+            });
+            
+            modalDiv.addEventListener('click', function(e) {
+                if (e.target === modalDiv) {
+                    document.body.removeChild(modalDiv);
+                }
+            });
+        }
+        
+        function showLanguageModal() {
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+            modalDiv.innerHTML = `
+                <div class="bg-white w-full rounded-t-2xl p-6 slide-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Til tanlash</h3>
+                        <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-language-modal hover:bg-gray-200 transition-colors">
+                            <i class="ri-close-line text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 p-4 bg-primary bg-opacity-10 rounded-lg cursor-pointer language-option" data-lang="uz">
+                            <div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-sm font-medium text-gray-800">O'zbek tili</span>
+                                <span class="text-xs text-gray-500 block">Sizning tanlovingiz</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer language-option" data-lang="ru">
+                            <div class="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
+                            <div class="flex-1">
+                                <span class="text-sm font-medium text-gray-800">Русский язык</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer language-option" data-lang="en">
+                            <div class="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
+                            <div class="flex-1">
+                                <span class="text-sm font-medium text-gray-800">English</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="pt-6">
+                        <button class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button save-language hover:bg-blue-600 transition-colors">Saqlash</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modalDiv);
+            
+            // Event listeners
+            const closeButton = modalDiv.querySelector('.close-language-modal');
+            const saveButton = modalDiv.querySelector('.save-language');
+            const languageOptions = modalDiv.querySelectorAll('.language-option');
+            
+            closeButton.addEventListener('click', function() {
+                document.body.removeChild(modalDiv);
+            });
+            
+            saveButton.addEventListener('click', function() {
+                const selectedLang = modalDiv.querySelector('.language-option .bg-primary')?.parentElement.dataset.lang || 'uz';
+                
+                // Save language preference (you can implement this with AJAX)
+                saveLanguagePreference(selectedLang);
+                
+                document.body.removeChild(modalDiv);
+                showNotification('Til sozlamalari saqlandi!', 'success');
+            });
+            
+            languageOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from all options
+                    languageOptions.forEach(opt => {
+                        const radio = opt.querySelector('.w-5.h-5');
+                        radio.classList.remove('bg-primary', 'border-primary');
+                        radio.classList.add('border-2', 'border-gray-300');
+                        radio.innerHTML = '';
+                    });
+                    
+                    // Add selection to clicked option
+                    const radio = this.querySelector('.w-5.h-5');
+                    radio.classList.remove('border-2', 'border-gray-300');
+                    radio.classList.add('bg-primary', 'border-primary');
+                    radio.innerHTML = '<div class="w-2 h-2 bg-white rounded-full"></div>';
+                });
+            });
+            
+            modalDiv.addEventListener('click', function(e) {
+                if (e.target === modalDiv) {
+                    document.body.removeChild(modalDiv);
+                }
+            });
+        }
+        
+        function showHelpModal() {
+            const template = document.getElementById('help-modal-template');
+            const modalHTML = template.innerHTML;
+            
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            modalDiv.id = 'help-modal';
+            
+            document.body.appendChild(modalDiv);
+            
+            // Event listeners
+            const closeButtons = modalDiv.querySelectorAll('.close-help-modal');
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    document.body.removeChild(modalDiv);
+                });
+            });
+            
+            modalDiv.addEventListener('click', function(e) {
+                if (e.target === modalDiv) {
+                    document.body.removeChild(modalDiv);
+                }
+            });
+        }
+        
+        function showAboutModal() {
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+            modalDiv.innerHTML = `
+                <div class="bg-white rounded-2xl p-6 w-full max-w-sm slide-in">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="ri-information-line text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Sklat.uz</h3>
+                        <p class="text-sm text-gray-600 mb-4">Do'kon boshqaruv tizimi</p>
+                        <div class="text-xs text-gray-500 space-y-1">
+                            <p>Versiya: 2.1.4</p>
+                            <p>© 2024 Sklat.uz. Barcha huquqlar himoyalangan.</p>
+                            <p>Ishlab chiqaruvchi: Sklat Technology</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-center text-primary text-sm font-medium hover:underline">Foydalanish shartlari</a>
+                        <a href="#" class="block text-center text-primary text-sm font-medium hover:underline">Maxfiylik siyosati</a>
+                    </div>
+                    <button class="w-full mt-6 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button close-about-modal hover:bg-gray-200 transition-colors">Yopish</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modalDiv);
+            
+            const closeButton = modalDiv.querySelector('.close-about-modal');
+            closeButton.addEventListener('click', function() {
+                document.body.removeChild(modalDiv);
+            });
+            
+            modalDiv.addEventListener('click', function(e) {
+                if (e.target === modalDiv) {
+                    document.body.removeChild(modalDiv);
+                }
+            });
+        }
+        
+        function showComingSoon(feature) {
+            showNotification(`"${feature}" funksiyasi tez orada ishga tushadi!`, 'info');
+        }
+        
+        // Utility functions
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.error-input').forEach(el => {
+                el.classList.remove('error-input');
+            });
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function isStrongPassword(password) {
+            // At least 8 characters, one uppercase, one lowercase, one number
+            const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            return re.test(password);
+        }
+        
+        function saveLanguagePreference(language) {
+            // Save language preference to localStorage
+            localStorage.setItem('sklat_language', language);
+            
+            // You can also send this to the server via AJAX
+            // fetch('/api/save-language/', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'X-CSRFToken': getCookie('csrftoken')
+            //     },
+            //     body: JSON.stringify({language: language})
+            // });
+        }
+        
+        function updateProfileInfo(firstName, lastName, email) {
+            // Update profile info on the page
+            const fullNameElement = document.querySelector('.bg-gradient-to-r h2');
+            const emailElement = document.querySelector('.text-blue-100.text-sm');
+            
+            if (fullNameElement) {
+                fullNameElement.textContent = `${firstName} ${lastName}`;
+            }
+            
+            if (emailElement) {
+                emailElement.textContent = email;
+            }
+            
+            // Update avatar initials
+            const avatarElement = document.querySelector('.w-16.h-16 span');
+            if (avatarElement) {
+                const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                avatarElement.textContent = initials;
+            }
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 slide-in
+                ${type === 'success' ? 'bg-green-500 text-white' :
+                  type === 'info' ? 'bg-blue-500 text-white' :
+                  type === 'error' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}`;
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="ri-${type === 'success' ? 'check' : type === 'info' ? 'information' : type === 'error' ? 'error-warning' : 'notification'}-line"></i>
+                        <span class="text-sm font-medium">${message}</span>
+                    </div>
+                    <button class="close-notification">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Close button
+            notification.querySelector('.close-notification').addEventListener('click', function() {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            });
+            
+            // Auto remove
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+        
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
 </html>

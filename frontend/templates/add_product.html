@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklat.uz - Mahsulot qo'shish</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'img/sklatlogo.png' %}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'img/sklatlogo.png' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    
+    <!-- CSS va JavaScript kutubxonalari -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fontlar va ikonlar -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        /* Animatsiyalar */
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Form validation */
+        .error-message {
+            color: #EF4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .error-input {
+            border-color: #EF4444 !important;
+            background-color: #FEF2F2 !important;
+        }
+        
+        .success-input {
+            border-color: #10B981 !important;
+            background-color: #ECFDF5 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Xabarlar -->
+    {% if messages %}
+    <div class="fixed top-16 left-4 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} bg-{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% elif message.tags == 'warning' %}orange{% else %}blue{% endif %}-500 text-white p-3 rounded-lg shadow-lg slide-in">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="ri-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}error-warning{% elif message.tags == 'warning' %}alert{% else %}information{% endif %}-line"></i>
+                    <span class="text-sm font-medium">{{ message }}</span>
+                </div>
+                <button class="close-message text-white hover:text-gray-200">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-white shadow-sm z-40">
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'mahsulotlar' %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+                    <i class="ri-arrow-left-line text-gray-600"></i>
+                </a>
+                <h1 class="text-lg font-semibold text-gray-800">Yangi mahsulot</h1>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button class="text-sm text-primary font-medium cursor-pointer" onclick="saveAsDraft()">
+                    Qoralama
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Form -->
+    <section class="pt-20 px-4 pb-24">
+        <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data" id="product-form" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Product Image -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="w-32 h-32 bg-gray-100 rounded-xl overflow-hidden mb-4 cursor-pointer relative" id="image-upload-area">
+                        <img id="product-image-preview" src="{% static 'img/default-product.png' %}" alt="Mahsulot rasmi" class="w-full h-full object-cover">
+                        <input type="file" name="image" id="product-image" accept="image/*" class="hidden" onchange="previewImage(this)">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all flex items-center justify-center cursor-pointer" onclick="document.getElementById('product-image').click()">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                <i class="ri-camera-line text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 text-center">Rasm yuklash uchun bosing (ixtiyoriy)</p>
+                </div>
+            </div>
+            
+            <!-- Basic Information -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-base font-semibold text-gray-800 mb-4">Asosiy ma'lumotlar</h3>
+                
+                <div class="space-y-4">
+                    <!-- Product Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Mahsulot nomi <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="name" required
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Masalan: Non oq"
+                            id="product-name"
+                            oninput="validateField(this)">
+                        <div class="error-message" id="name-error">Mahsulot nomini kiriting</div>
+                    </div>
+                    
+                    <!-- SKU -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            SKU kodi <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="sku" required
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="Masalan: PR001"
+                            id="product-sku"
+                            oninput="validateField(this, 'sku')">
+                        <div class="error-message" id="sku-error">SKU kodini kiriting</div>
+                        <div class="text-xs text-gray-500 mt-1">Shtrix kod yoki maxsus identifikator</div>
+                    </div>
+                    
+                    <!-- Category -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Kategoriya <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <select name="category" required
+                                class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm appearance-none"
+                                id="product-category"
+                                onchange="validateField(this)">
+                                <option value="">Kategoriyani tanlang</option>
+                         
+                            </select>
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                <i class="ri-arrow-down-s-line text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="error-message" id="category-error">Kategoriyani tanlang</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Price Information -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-base font-semibold text-gray-800 mb-4">Narx ma'lumotlari</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Purchase Price -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Kirim narxi <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" name="purchase_price" required step="0.01"
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                                placeholder="0"
+                                id="purchase-price"
+                                oninput="calculateProfit()">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                <span class="text-gray-500 text-sm">so'm</span>
+                            </div>
+                        </div>
+                        <div class="error-message" id="purchase-price-error">Kirim narxini kiriting</div>
+                    </div>
+                    
+                    <!-- Sale Price -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Sotuv narxi <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" name="sale_price" required step="0.01"
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                                placeholder="0"
+                                id="sale-price"
+                                oninput="calculateProfit()">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                <span class="text-gray-500 text-sm">so'm</span>
+                            </div>
+                        </div>
+                        <div class="error-message" id="sale-price-error">Sotuv narxini kiriting</div>
+                    </div>
+                </div>
+                
+                <!-- Profit Display -->
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">Foyda:</span>
+                        <span class="text-sm font-medium text-green-600" id="profit-display">0 so'm (0%)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stock Information -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-base font-semibold text-gray-800 mb-4">Ombordagi ma'lumotlar</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Quantity -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Boshlang'ich miqdor <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" name="quantity" required step="0.01"
+                                class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                                placeholder="0"
+                                id="product-quantity"
+                                oninput="validateField(this)">
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                <span class="text-gray-500 text-sm" id="unit-display">dona</span>
+                            </div>
+                        </div>
+                        <div class="error-message" id="quantity-error">Miqdorni kiriting</div>
+                    </div>
+                    
+                    <!-- Unit -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            O'lchov birligi <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <select name="unit" required
+                                class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm appearance-none"
+                                id="product-unit"
+                                onchange="updateUnitDisplay()">
+                                <option value="">Birlik tanlang</option>
+                                <option value="kg">Kilogram (kg)</option>
+                                <option value="pc" selected>Dona (pc)</option>
+                                <option value="l">Litr (l)</option>
+                                <option value="pack">Paket (pack)</option>
+                                <option value="box">Quti (box)</option>
+                                <option value="pair">Juft (pair)</option>
+                            </select>
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                <i class="ri-arrow-down-s-line text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="error-message" id="unit-error">O'lchov birligini tanlang</div>
+                    </div>
+                </div>
+                
+                <!-- Minimum Quantity -->
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Minimal miqdor
+                    </label>
+                    <div class="relative">
+                        <input type="number" name="min_quantity" step="0.01"
+                            class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm"
+                            placeholder="5"
+                            value="5"
+                            id="min-quantity">
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <span class="text-gray-500 text-sm" id="min-unit-display">dona</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">Bu miqdorga yetganda ogohlantirish beriladi</div>
+                </div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="text-base font-semibold text-gray-800 mb-4">Qo'shimcha ma'lumotlar</h3>
+                
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Tavsif (ixtiyoriy)
+                    </label>
+                    <textarea name="description"
+                        class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none text-sm resize-none"
+                        rows="3"
+                        placeholder="Mahsulot haqida qo'shimcha ma'lumot..."
+                        id="product-description"></textarea>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-3 pt-4">
+                <button type="button" onclick="window.location.href='{% url 'mahsulotlar' %}'"
+                    class="bg-gray-100 text-gray-700 py-3 rounded-lg font-medium cursor-pointer !rounded-button hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2">
+                    <i class="ri-close-line"></i>
+                    <span>Bekor qilish</span>
+                </button>
+                
+                <button type="submit"
+                    class="bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+                    id="submit-btn">
+                    <i class="ri-save-line"></i>
+                    <span>Saqlash</span>
+                </button>
+            </div>
+        </form>
+    </section>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-30">
+        <div class="grid grid-cols-5 h-16">
+            <a href="{% url 'home' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-home-5-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Bosh sahifa</span>
+            </a>
+            
+            <a href="{% url 'mahsulotlar' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-shopping-bag-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mahsulotlar</span>
+            </a>
+            
+            <a href="{% url 'analitika' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-bar-chart-box-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Analitika</span>
+            </a>
+            
+            <a href="{% url 'mijozlar' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-group-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mijozlar</span>
+            </a>
+            
+            <a href="{% url 'sozlamalar' %}" class="flex flex-col items-center justify-center space-y-1 cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-settings-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Sozlamalar</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- JavaScript -->
+    <script>
+        // DOM yuklanganda
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close message buttons
+            const closeMessageButtons = document.querySelectorAll('.close-message');
+            closeMessageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const alert = this.closest('.alert');
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
+                    }, 300);
+                });
+            });
+            
+            // Auto-hide messages after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
+                    }, 300);
+                });
+            }, 5000);
+            
+            // Initialize form validation
+            initializeFormValidation();
+            
+            // Set focus to first input
+            document.getElementById('product-name').focus();
+        });
+        
+        // Image preview
+        function previewImage(input) {
+            const preview = document.getElementById('product-image-preview');
+            const file = input.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+                
+                reader.readAsDataURL(file);
+                
+                // Show success state
+                const uploadArea = document.getElementById('image-upload-area');
+                uploadArea.classList.add('border-2', 'border-green-500');
+            }
+        }
+        
+        // Update unit display
+        function updateUnitDisplay() {
+            const unitSelect = document.getElementById('product-unit');
+            const unitDisplay = document.getElementById('unit-display');
+            const minUnitDisplay = document.getElementById('min-unit-display');
+            
+            const unitTexts = {
+                'kg': 'kg',
+                'pc': 'dona',
+                'l': 'litr',
+                'pack': 'paket',
+                'box': 'quti',
+                'pair': 'juft'
+            };
+            
+            const selectedUnit = unitSelect.value;
+            unitDisplay.textContent = unitTexts[selectedUnit] || 'dona';
+            minUnitDisplay.textContent = unitTexts[selectedUnit] || 'dona';
+        }
+        
+        // Calculate profit
+        function calculateProfit() {
+            const purchasePrice = parseFloat(document.getElementById('purchase-price').value) || 0;
+            const salePrice = parseFloat(document.getElementById('sale-price').value) || 0;
+            const profitDisplay = document.getElementById('profit-display');
+            
+            if (purchasePrice > 0 && salePrice > 0) {
+                const profit = salePrice - purchasePrice;
+                const profitPercentage = (profit / purchasePrice) * 100;
+                
+                profitDisplay.textContent = `${profit.toFixed(0)} so'm (${profitPercentage.toFixed(1)}%)`;
+                
+                // Color coding
+                if (profit > 0) {
+                    profitDisplay.classList.remove('text-red-600');
+                    profitDisplay.classList.add('text-green-600');
+                } else if (profit < 0) {
+                    profitDisplay.classList.remove('text-green-600');
+                    profitDisplay.classList.add('text-red-600');
+                } else {
+                    profitDisplay.classList.remove('text-green-600', 'text-red-600');
+                    profitDisplay.classList.add('text-gray-600');
+                }
+            } else {
+                profitDisplay.textContent = '0 so\'m (0%)';
+                profitDisplay.classList.remove('text-green-600', 'text-red-600');
+                profitDisplay.classList.add('text-gray-600');
+            }
+        }
+        
+        // Form validation
+        function initializeFormValidation() {
+            const form = document.getElementById('product-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset errors
+                clearErrors();
+                
+                let isValid = true;
+                
+                // Validate required fields
+                const requiredFields = [
+                    {id: 'product-name', errorId: 'name-error', message: 'Mahsulot nomini kiriting'},
+                    {id: 'product-sku', errorId: 'sku-error', message: 'SKU kodini kiriting'},
+                    {id: 'product-category', errorId: 'category-error', message: 'Kategoriyani tanlang'},
+                    {id: 'purchase-price', errorId: 'purchase-price-error', message: 'Kirim narxini kiriting'},
+                    {id: 'sale-price', errorId: 'sale-price-error', message: 'Sotuv narxini kiriting'},
+                    {id: 'product-quantity', errorId: 'quantity-error', message: 'Miqdorni kiriting'},
+                    {id: 'product-unit', errorId: 'unit-error', message: 'O\'lchov birligini tanlang'}
+                ];
+                
+                requiredFields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    const error = document.getElementById(field.errorId);
+                    
+                    if (!input.value.trim()) {
+                        showError(input, error, field.message);
+                        isValid = false;
+                    } else if (field.id === 'product-sku') {
+                        // SKU validation
+                        if (!isValidSKU(input.value)) {
+                            showError(input, error, 'SKU kod noto\'g\'ri formatda');
+                            isValid = false;
+                        }
+                    } else if (field.id === 'purchase-price' || field.id === 'sale-price') {
+                        // Price validation
+                        const price = parseFloat(input.value);
+                        if (price < 0) {
+                            showError(input, error, 'Narx manfiy bo\'lishi mumkin emas');
+                            isValid = false;
+                        } else if (price > 1000000000) {
+                            showError(input, error, 'Narx juda katta');
+                            isValid = false;
+                        }
+                    } else if (field.id === 'product-quantity') {
+                        // Quantity validation
+                        const quantity = parseFloat(input.value);
+                        if (quantity < 0) {
+                            showError(input, error, 'Miqdor manfiy bo\'lishi mumkin emas');
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                // Validate sale price > purchase price
+                const purchasePrice = parseFloat(document.getElementById('purchase-price').value);
+                const salePrice = parseFloat(document.getElementById('sale-price').value);
+                
+                if (purchasePrice > 0 && salePrice > 0 && salePrice < purchasePrice) {
+                    const salePriceError = document.getElementById('sale-price-error');
+                    showError(document.getElementById('sale-price'), salePriceError, 'Sotuv narxi kirim narxidan past bo\'lishi mumkin emas');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    // Disable submit button to prevent double submission
+                    const submitBtn = document.getElementById('submit-btn');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="ri-loader-4-line animate-spin"></i><span>Saqlanmoqda...</span>';
+                    
+                    // Submit form
+                    form.submit();
+                } else {
+                    // Scroll to first error
+                    const firstError = document.querySelector('.error-message[style*="display: block"]');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    showNotification('Iltimos, barcha maydonlarni to\'g\'ri to\'ldiring!', 'error');
+                }
+            });
+        }
+        
+        // Validate individual field
+        function validateField(input, type = 'text') {
+            const errorId = input.id + '-error';
+            const error = document.getElementById(errorId);
+            
+            if (!input.value.trim()) {
+                showError(input, error, 'Bu maydonni to\'ldirish shart');
+                return false;
+            }
+            
+            if (type === 'sku' && !isValidSKU(input.value)) {
+                showError(input, error, 'SKU kod noto\'g\'ri formatda');
+                return false;
+            }
+            
+            if ((input.id === 'purchase-price' || input.id === 'sale-price') && parseFloat(input.value) < 0) {
+                showError(input, error, 'Narx manfiy bo\'lishi mumkin emas');
+                return false;
+            }
+            
+            if (input.id === 'product-quantity' && parseFloat(input.value) < 0) {
+                showError(input, error, 'Miqdor manfiy bo\'lishi mumkin emas');
+                return false;
+            }
+            
+            // Clear error if valid
+            clearError(input, error);
+            return true;
+        }
+        
+        // Check if SKU is valid
+        function isValidSKU(sku) {
+            // Basic SKU validation - allow letters, numbers, and dashes
+            return /^[A-Za-z0-9\-_]+$/.test(sku);
+        }
+        
+        // Show error
+        function showError(input, errorElement, message) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            input.classList.add('error-input');
+            input.classList.remove('success-input');
+        }
+        
+        // Clear error
+        function clearError(input, errorElement) {
+            errorElement.style.display = 'none';
+            input.classList.remove('error-input');
+            input.classList.add('success-input');
+        }
+        
+        // Clear all errors
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.error-input, .success-input').forEach(el => {
+                el.classList.remove('error-input', 'success-input');
+            });
+        }
+        
+        // Save as draft
+        function saveAsDraft() {
+            // Get form data
+            const formData = {
+                name: document.getElementById('product-name').value,
+                sku: document.getElementById('product-sku').value,
+                category: document.getElementById('product-category').value,
+                purchase_price: document.getElementById('purchase-price').value,
+                sale_price: document.getElementById('sale-price').value,
+                quantity: document.getElementById('product-quantity').value,
+                unit: document.getElementById('product-unit').value,
+                min_quantity: document.getElementById('min-quantity').value,
+                description: document.getElementById('product-description').value
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('product_draft', JSON.stringify(formData));
+            
+            showNotification('Mahsulot qoralama sifatida saqlandi!', 'success');
+            
+            // Ask user what to do next
+            setTimeout(() => {
+                if (confirm('Qoralama saqlandi. Mahsulotlar sahifasiga qaytishni xohlaysizmi?')) {
+                    window.location.href = "{% url 'mahsulotlar' %}";
+                }
+            }, 1000);
+        }
+        
+        // Load draft if exists
+        function loadDraft() {
+            const draft = localStorage.getItem('product_draft');
+            if (draft) {
+                try {
+                    const formData = JSON.parse(draft);
+                    
+                    // Fill form fields
+                    document.getElementById('product-name').value = formData.name || '';
+                    document.getElementById('product-sku').value = formData.sku || '';
+                    document.getElementById('product-category').value = formData.category || '';
+                    document.getElementById('purchase-price').value = formData.purchase_price || '';
+                    document.getElementById('sale-price').value = formData.sale_price || '';
+                    document.getElementById('product-quantity').value = formData.quantity || '';
+                    document.getElementById('product-unit').value = formData.unit || 'pc';
+                    document.getElementById('min-quantity').value = formData.min_quantity || '5';
+                    document.getElementById('product-description').value = formData.description || '';
+                    
+                    // Update displays
+                    updateUnitDisplay();
+                    calculateProfit();
+                    
+                    showNotification('Qoralama yuklandi!', 'info');
+                } catch (e) {
+                    console.error('Error loading draft:', e);
+                }
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 left-4 right-4 p-4 rounded-lg shadow-lg z-50 slide-in
+                ${type === 'success' ? 'bg-green-500 text-white' :
+                  type === 'info' ? 'bg-blue-500 text-white' :
+                  type === 'error' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}`;
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="ri-${type === 'success' ? 'check' : type === 'info' ? 'information' : type === 'error' ? 'error-warning' : 'notification'}-line"></i>
+                        <span class="text-sm font-medium">${message}</span>
+                    </div>
+                    <button class="close-notification">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Close button
+            notification.querySelector('.close-notification').addEventListener('click', function() {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            });
+            
+            // Auto remove
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+        
+        // Auto-save draft every 30 seconds
+        setInterval(function() {
+            const name = document.getElementById('product-name').value;
+            if (name) { // Only save if there's at least a name
+                saveAsDraft();
+            }
+        }, 30000);
+        
+        // Load draft on page load
+        window.addEventListener('load', loadDraft);
+        
+        // Warn user if they try to leave with unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            const name = document.getElementById('product-name').value;
+            if (name) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>

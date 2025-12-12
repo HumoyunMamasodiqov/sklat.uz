@@ -5,250 +5,217 @@
     <script src="https://static.readdy.ai/static/e.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Sklat.uz | Do'kon Boshqaruv Tizimi</title>
-   <!-- Favicon -->
-   <link rel="icon" type="image/png" href="{% static 'img/sklatlogo.png' %}">
-
-   <!-- Home Screen Icon (MUHIM) -->
-   <link rel="apple-touch-icon" sizes="512x512" href="{% static 'img/sklatlogo.png' %}">
-
-   <!-- Manifest (MUHIM) -->
-   <link rel="manifest" href="{% static 'manifest.json' %}">
+    <title>Sklat.uz | Do'kon Boshqaruv Tizimi</title>
+   
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'img/sklatlogo.png' %}">
+    <!-- Home Screen Icon (MUHIM) -->
+    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'img/sklatlogo.png' %}">
+    <!-- Manifest (MUHIM) -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}}</script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    
     <style>
-    :where([class^="ri-"])::before { content: "\f3c2"; }
-    .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    /* SPLASH SCREEN STYLES - FIXED */
-    
-    /* Asosiy konteyner - yashirin holatda boshlanadi */
-    .splash-container {
-        width: 100%;
-        height: 100vh;
-        background-color: #0a36fb;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.5s ease, visibility 0.5s;
-    }
-    
-    /* Faqat birinchi marta ko'rsatish */
-    .splash-container.show {
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    /* Ko'rsatilganda animatsiya bilan yo'qolish */
-    .splash-container.hiding {
-        animation: fadeOut 1s ease-in-out forwards;
-    }
-    
-    /* Logo uchun animatsiya */
-    .logo {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        animation: logoAnimation 2s ease-in-out 0.5s both, float 3s ease-in-out infinite 2s;
-        filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.3));
-    }
-    
-    /* Sarlavha uchun animatsiya */
-    .title {
-        color: white;
-        font-weight: bold;
-        font-size: 30px;
-        margin-top: 20px;
-        animation: slideUpFade 1.5s ease-out 0.8s both, glow 2s ease-in-out infinite alternate 2s;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* Matn uchun animatsiya */
-    .subtitle {
-        color: white;
-        margin-top: 10px;
-        animation: slideUpFade 1.5s ease-out 1.1s both, subtlePulse 3s ease-in-out infinite 2s;
-        text-align: center;
-        max-width: 300px;
-        line-height: 1.4;
-    }
-    
-    /* Loading progress animation */
-    .loading-bar {
-        position: absolute;
-        bottom: 30%;
-        width: 200px;
-        height: 4px;
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 2px;
-        overflow: hidden;
-        opacity: 0;
-        animation: fadeIn 0.5s ease 1.5s forwards;
-    }
-    
-    .loading-progress {
-        height: 100%;
-        width: 0%;
-        background-color: white;
-        border-radius: 2px;
-        animation: loading 3s ease-in-out forwards;
-    }
-    
-    /* Asosiy kontent - splash screen o'chgandan keyin ko'rinadi */
-    .main-content {
-        padding: 40px 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-        min-height: 100vh;
-        opacity: 1;
-    }
-    
-    /* Splash screen chiqarish tugmasi */
-    .show-splash-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #0a36fb;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(10, 54, 251, 0.3);
-        z-index: 9998;
-        transition: all 0.3s ease;
-    }
-    
-    .show-splash-btn:hover {
-        background-color: #0830e0;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(10, 54, 251, 0.4);
-    }
-    
-    /* Animatsiyalar */
-    @keyframes logoAnimation {
-        0% {
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* SPLASH SCREEN STYLES - FIXED */
+        .splash-container {
+            width: 100%;
+            height: 100vh;
+            background-color: #0a36fb;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
-            transform: translateY(-50px) rotate(-180deg) scale(0.5);
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
-        70% {
-            opacity: 1;
-            transform: translateY(10px) rotate(10deg) scale(1.1);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) rotate(0) scale(1);
-        }
-    }
-    
-    @keyframes slideUpFade {
-        0% {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeOut {
-        0% {
+        
+        .splash-container.show {
             opacity: 1;
             visibility: visible;
         }
-        100% {
+        
+        .splash-container.hiding {
+            animation: fadeOut 1s ease-in-out forwards;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            animation: logoAnimation 2s ease-in-out 0.5s both, float 3s ease-in-out infinite 2s;
+            filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.3));
+        }
+        
+        .title {
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 20px;
+            animation: slideUpFade 1.5s ease-out 0.8s both, glow 2s ease-in-out infinite alternate 2s;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            color: white;
+            margin-top: 10px;
+            animation: slideUpFade 1.5s ease-out 1.1s both, subtlePulse 3s ease-in-out infinite 2s;
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+        
+        .loading-bar {
+            position: absolute;
+            bottom: 30%;
+            width: 200px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
             opacity: 0;
-            visibility: hidden;
+            animation: fadeIn 0.5s ease 1.5s forwards;
         }
-    }
-    
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-    
-    @keyframes glow {
-        0% {
-            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
-        }
-        100% {
-            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4);
-        }
-    }
-    
-    @keyframes subtlePulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.8;
-        }
-    }
-    
-    /* Background gradient animation */
-    .splash-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, #0a36fb, #1a46fb, #2a56fb);
-        background-size: 300% 300%;
-        animation: gradientShift 10s ease infinite;
-        z-index: -1;
-    }
-    
-    @keyframes gradientShift {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-    
-    @keyframes loading {
-        0% {
+        
+        .loading-progress {
+            height: 100%;
             width: 0%;
+            background-color: white;
+            border-radius: 2px;
+            animation: loading 3s ease-in-out forwards;
         }
-        100% {
+        
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            opacity: 1;
+        }
+        
+        .show-splash-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0a36fb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(10, 54, 251, 0.3);
+            z-index: 9998;
+            transition: all 0.3s ease;
+        }
+        
+        .show-splash-btn:hover {
+            background-color: #0830e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(10, 54, 251, 0.4);
+        }
+        
+        @keyframes logoAnimation {
+            0% { opacity: 0; transform: translateY(-50px) rotate(-180deg) scale(0.5); }
+            70% { opacity: 1; transform: translateY(10px) rotate(10deg) scale(1.1); }
+            100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+        }
+        
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3); }
+            100% { text-shadow: 0 2px 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4); }
+        }
+        
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .splash-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0a36fb, #1a46fb, #2a56fb);
+            background-size: 300% 300%;
+            animation: gradientShift 10s ease infinite;
+            z-index: -1;
         }
-    }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
@@ -260,526 +227,357 @@
         </div>
     </div>
      
-<!-- Header -->
-<header class="fixed top-0 w-full bg-white shadow-sm z-50">
-    <div class="flex items-center justify-between px-4 py-3">
-    <div class="flex items-center space-x-3">
-    <div class="w-8 h-8  rounded-lg flex items-center justify-center">
-    <img class=" rounded-[30px]" src="{% static 'img/sklatlogo.png' %}" alt="">
-    </div>
-    <h1 class="font-['montserrat'] text-xl text-gray-800 font-bold  ">Sklat.uz </h1>
-    </div>
-    <div class="flex items-center space-x-3">
-    <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer">
-    <i class="ri-notification-3-line text-gray-600"></i>
-    </button>
-  <div>
-    <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer">
-    <i class="ri-user-3-line text-gray-600"></i>
-    </button>
-  </div>
-    </div>
-    </div>
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-white shadow-sm z-50">
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center">
+                    <img class="rounded-[30px]" src="{% static 'img/sklatlogo.png' %}" alt="">
+                </div>
+                <h1 class="font-['montserrat'] text-xl text-gray-800 font-bold">Sklat.uz</h1>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer">
+                    <i class="ri-notification-3-line text-gray-600"></i>
+                </button>
+                <div>
+                    <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer">
+                        <i class="ri-user-3-line text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
+
     <!-- Search and Filter Section -->
     <section class="pt-20 px-4 pb-4 bg-white">
-    <div class="relative mb-4">
-    <input type="text" placeholder="Mahsulot nomi yoki shtrix kod..."
-    class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-lg text-sm border-none focus:ring-2 focus:ring-primary focus:outline-none">
-    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
-    <i class="ri-search-line text-gray-400 text-sm"></i>
-    </div>
-    </div>
-    <div class="flex space-x-2 overflow-x-auto pb-2">
-    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Barchasi</button>
-    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Oziq-ovqat</button>
-    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Ichimliklar</button>
-    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Maishiy</button>
-    </div>
+        <div class="relative mb-4">
+            <input type="text" placeholder="Mahsulot nomi yoki shtrix kod..."
+                class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-lg text-sm border-none focus:ring-2 focus:ring-primary focus:outline-none">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                <i class="ri-search-line text-gray-400 text-sm"></i>
+            </div>
+        </div>
+        <div class="flex space-x-2 overflow-x-auto pb-2">
+            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Barchasi</button>
+            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Oziq-ovqat</button>
+            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Ichimliklar</button>
+            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap cursor-pointer !rounded-button">Maishiy</button>
+        </div>
     </section>
+
     <!-- Stats Cards -->
     <section class="px-4 pb-4">
-    <div class="grid grid-cols-2 gap-3 mb-4">
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="flex items-center justify-between mb-2">
-    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-    <i class="ri-money-dollar-circle-line text-green-600 text-lg"></i>
-    </div>
-    <span class="text-xs text-gray-500">Bugun</span>
-    </div>
-    <div class="text-lg font-semibold text-gray-800">2,450,000</div>
-    <div class="text-xs text-gray-500">so'm</div>
-    </div>
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="flex items-center justify-between mb-2">
-    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-    <i class="ri-shopping-cart-line text-blue-600 text-lg"></i>
-    </div>
-    <span class="text-xs text-gray-500">Jami</span>
-    </div>
-    <div class="text-lg font-semibold text-gray-800">1,247</div>
-    <div class="text-xs text-gray-500">mahsulot</div>
-    </div>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="flex items-center justify-between mb-2">
-    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-    <i class="ri-credit-card-line text-orange-600 text-lg"></i>
-    </div>
-    <span class="text-xs text-gray-500">Nasiya</span>
-    </div>
-    <div class="text-lg font-semibold text-gray-800">850,000</div>
-    <div class="text-xs text-gray-500">so'm</div>
-    </div>
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="flex items-center justify-between mb-2">
-    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-    <i class="ri-trending-up-line text-purple-600 text-lg"></i>
-    </div>
-    <span class="text-xs text-gray-500">Foyda</span>
-    </div>
-    <div class="text-lg font-semibold text-gray-800">425,000</div>
-    <div class="text-xs text-gray-500">so'm</div>
-    </div>
-    </div>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-money-dollar-circle-line text-green-600 text-lg"></i>
+                    </div>
+                    <span class="text-xs text-gray-500">Bugun</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-800">{{ total_sales_today|default:"2,450,000" }}</div>
+                <div class="text-xs text-gray-500">so'm</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-shopping-cart-line text-blue-600 text-lg"></i>
+                    </div>
+                    <span class="text-xs text-gray-500">Jami</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-800">{{ total_products|default:"1,247" }}</div>
+                <div class="text-xs text-gray-500">mahsulot</div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-credit-card-line text-orange-600 text-lg"></i>
+                    </div>
+                    <span class="text-xs text-gray-500">Nasiya</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-800">{{ total_debt|default:"850,000" }}</div>
+                <div class="text-xs text-gray-500">so'm</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-trending-up-line text-purple-600 text-lg"></i>
+                    </div>
+                    <span class="text-xs text-gray-500">Foyda</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-800">{{ total_profit|default:"425,000" }}</div>
+                <div class="text-xs text-gray-500">so'm</div>
+            </div>
+        </div>
     </section>
+
     <!-- Quick Actions -->
     <section class="px-4 pb-4">
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-    <h3 class="text-sm font-medium text-gray-800 mb-3">Tezkor amallar</h3>
-    <div class="grid grid-cols-4 gap-4">
-    <div class="flex flex-col items-center cursor-pointer">
-    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=icon%2C%203D%20cartoon%2C%20incoming%20goods%20delivery%20box%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20vibrant%20colors%20with%20soft%20gradients%2C%20minimalist%20design%2C%20smooth%20rounded%20shapes%2C%20subtle%20shading%2C%20no%20outlines%2C%20centered%20composition%2C%20isolated%20on%20white%20background%2C%20playful%20and%20friendly%20aesthetic%2C%20isometric%20perspective%2C%20high%20detail%20quality%2C%20clean%20and%20modern%20look%2C%20single%20object%20focus&width=48&height=48&seq=1&orientation=squarish"
-    alt="Kirim" class="w-full h-full object-cover object-top">
-    </div>
-    <span class="text-xs text-gray-600 text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Kirim</span>
-    </div>
-    <div class="flex flex-col items-center cursor-pointer">
-    <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=icon%2C%203D%20cartoon%2C%20outgoing%20goods%20shipping%20box%20with%20arrow%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20vibrant%20colors%20with%20soft%20gradients%2C%20minimalist%20design%2C%20smooth%20rounded%20shapes%2C%20subtle%20shading%2C%20no%20outlines%2C%20centered%20composition%2C%20isolated%20on%20white%20background%2C%20playful%20and%20friendly%20aesthetic%2C%20isometric%20perspective%2C%20high%20detail%20quality%2C%20clean%20and%20modern%20look%2C%20single%20object%20focus&width=48&height=48&seq=2&orientation=squarish"
-    alt="Chiqim" class="w-full h-full object-cover object-top">
-    </div>
-    <span class="text-xs text-gray-600 text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Chiqim</span>
-    </div>
-    <div class="flex flex-col items-center cursor-pointer">
-    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=icon%2C%203D%20cartoon%2C%20sales%20transaction%20cash%20register%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20vibrant%20colors%20with%20soft%20gradients%2C%20minimalist%20design%2C%20smooth%20rounded%20shapes%2C%20subtle%20shading%2C%20no%20outlines%2C%20centered%20composition%2C%20isolated%20on%20white%20background%2C%20playful%20and%20friendly%20aesthetic%2C%20isometric%20perspective%2C%20high%20detail%20quality%2C%20clean%20and%20modern%20look%2C%20single%20object%20focus&width=48&height=48&seq=3&orientation=squarish"
-    alt="Sotuv" class="w-full h-full object-cover object-top">
-    </div>
-    <span class="text-xs text-gray-600 text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Sotuv</span>
-    </div>
-    <div class="flex flex-col items-center cursor-pointer">
-    <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=icon%2C%203D%20cartoon%2C%20analytics%20dashboard%20chart%20graph%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20vibrant%20colors%20with%20soft%20gradients%2C%20minimalist%20design%2C%20smooth%20rounded%20shapes%2C%20subtle%20shading%2C%20no%20outlines%2C%20centered%20composition%2C%20isolated%20on%20white%20background%2C%20playful%20and%20friendly%20aesthetic%2C%20isometric%20perspective%2C%20high%20detail%20quality%2C%20clean%20and%20modern%20look%2C%20single%20object%20focus&width=48&height=48&seq=4&orientation=squarish"
-    alt="Hisobot" class="w-full h-full object-cover object-top">
-    </div>
-    <span class="text-xs text-gray-600 text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Hisobot</span>
-    </div>
-    </div>
-    </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-800 mb-3">Tezkor amallar</h3>
+            <div class="grid grid-cols-4 gap-4">
+                {% for action in quick_actions %}
+                <div class="flex flex-col items-center cursor-pointer">
+                    <div class="w-12 h-12 bg-{{ action.color }}-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=icon%2C%203D%20cartoon%2C%20incoming%20goods%20delivery%20box%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20vibrant%20colors%20with%20soft%20gradients%2C%20minimalist%20design%2C%20smooth%20rounded%20shapes%2C%20subtle%20shading%2C%20no%20outlines%2C%20centered%20composition%2C%20isolated%20on%20white%20background%2C%20playful%20and%20friendly%20aesthetic%2C%20isometric%20perspective%2C%20high%20detail%20quality%2C%20clean%20and%20modern%20look%2C%20single%20object%20focus&width=48&height=48&seq={{ forloop.counter }}&orientation=squarish"
+                            alt="{{ action.name }}" class="w-full h-full object-cover object-top">
+                    </div>
+                    <span class="text-xs text-gray-600 text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ action.name }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </section>
+
     <!-- Products List -->
     <section class="px-4 pb-24">
-    <div class="flex items-center justify-between mb-4">
-    <h3 class="text-lg font-semibold text-gray-800">Mahsulotlar</h3>
-    <button class="text-primary text-sm cursor-pointer">Barchasini ko'rish</button>
-    </div>
-    <div class="space-y-3">
-    <!-- Product Item 1 -->
-    <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
-    <div class="flex items-center space-x-3">
-    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=Fresh%20red%20apple%20fruit%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=5&orientation=squarish"
-    alt="Olma" class="w-full h-full object-cover object-top">
-    </div>
-    <div class="flex-1">
-    <h4 class="font-medium text-gray-800">Olma qizil</h4>
-    <p class="text-xs text-gray-500 mb-1">Meva-sabzavot</p>
-    <div class="flex items-center justify-between">
-    <div class="text-sm">
-    <span class="text-gray-500">Kirim:</span>
-    <span class="font-medium text-gray-800">8,000 so'm</span>
-    </div>
-    <div class="text-right">
-    <div class="text-sm font-medium text-primary">12,000 so'm</div>
-    <div class="text-xs text-gray-500">45 kg mavjud</div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    <!-- Product Item 2 -->
-    <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
-    <div class="flex items-center space-x-3">
-    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=Fresh%20white%20bread%20loaf%2C%20bakery%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=6&orientation=squarish"
-    alt="Non" class="w-full h-full object-cover object-top">
-    </div>
-    <div class="flex-1">
-    <h4 class="font-medium text-gray-800">Non oq</h4>
-    <p class="text-xs text-gray-500 mb-1">Oziq-ovqat</p>
-    <div class="flex items-center justify-between">
-    <div class="text-sm">
-    <span class="text-gray-500">Kirim:</span>
-    <span class="font-medium text-gray-800">2,500 so'm</span>
-    </div>
-    <div class="text-right">
-    <div class="text-sm font-medium text-primary">3,500 so'm</div>
-    <div class="text-xs text-gray-500">28 dona mavjud</div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    <!-- Product Item 3 -->
-    <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
-    <div class="flex items-center space-x-3">
-    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=Fresh%20milk%20bottle%2C%20dairy%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=7&orientation=squarish"
-    alt="Sut" class="w-full h-full object-cover object-top">
-    </div>
-    <div class="flex-1">
-    <h4 class="font-medium text-gray-800">Sut 1L</h4>
-    <p class="text-xs text-gray-500 mb-1">Sut mahsulotlari</p>
-    <div class="flex items-center justify-between">
-    <div class="text-sm">
-    <span class="text-gray-500">Kirim:</span>
-    <span class="font-medium text-gray-800">6,500 so'm</span>
-    </div>
-    <div class="text-right">
-    <div class="text-sm font-medium text-primary">9,000 so'm</div>
-    <div class="text-xs text-gray-500">15 dona mavjud</div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    <!-- Product Item 4 -->
-    <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
-    <div class="flex items-center space-x-3">
-    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=Fresh%20chicken%20eggs%20in%20carton%2C%20farm%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=8&orientation=squarish"
-    alt="Tuxum" class="w-full h-full object-cover object-top">
-    </div>
-    <div class="flex-1">
-    <h4 class="font-medium text-gray-800">Tuxum 10 dona</h4>
-    <p class="text-xs text-gray-500 mb-1">Oziq-ovqat</p>
-    <div class="flex items-center justify-between">
-    <div class="text-sm">
-    <span class="text-gray-500">Kirim:</span>
-    <span class="font-medium text-gray-800">18,000 so'm</span>
-    </div>
-    <div class="text-right">
-    <div class="text-sm font-medium text-primary">25,000 so'm</div>
-    <div class="text-xs text-red-500">2 dona mavjud</div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    <!-- Product Item 5 -->
-    <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
-    <div class="flex items-center space-x-3">
-    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-    <img src="https://readdy.ai/api/search-image?query=Coca%20Cola%20bottle%20drink%2C%20beverage%20product%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq=9&orientation=squarish"
-    alt="Kola" class="w-full h-full object-cover object-top">
-    </div>
-    <div class="flex-1">
-    <h4 class="font-medium text-gray-800">Coca Cola 0.5L</h4>
-    <p class="text-xs text-gray-500 mb-1">Ichimliklar</p>
-    <div class="flex items-center justify-between">
-    <div class="text-sm">
-    <span class="text-gray-500">Kirim:</span>
-    <span class="font-medium text-gray-800">4,500 so'm</span>
-    </div>
-    <div class="text-right">
-    <div class="text-sm font-medium text-primary">7,000 so'm</div>
-    <div class="text-xs text-gray-500">32 dona mavjud</div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Mahsulotlar</h3>
+            <button class="text-primary text-sm cursor-pointer">Barchasini ko'rish</button>
+        </div>
+        <div class="space-y-3">
+            {% for product in top_products %}
+            <div class="bg-white rounded-xl p-4 shadow-sm cursor-pointer">
+                <div class="flex items-center space-x-3">
+                    <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query={{ product.name|urlencode }}%2C%20high-quality%20product%20photography%2C%20clean%20white%20background%2C%20centered%20composition%2C%20natural%20lighting%2C%20crisp%20details%2C%20commercial%20product%20shot%2C%20isolated%20on%20white%20background%2C%20professional%20food%20photography%20style&width=64&height=64&seq={{ forloop.counter|add:4 }}&orientation=squarish"
+                            alt="{{ product.name }}" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-800">{{ product.name }}</h4>
+                        <p class="text-xs text-gray-500 mb-1">{{ product.category.name|default:"Kategoriya" }}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm">
+                                <span class="text-gray-500">Kirim:</span>
+                                <span class="font-medium text-gray-800">{{ product.purchase_price|default:"0" }} so'm</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-medium text-primary">{{ product.sale_price|default:"0" }} so'm</div>
+                                <div class="text-xs {% if product.is_low_stock %}text-red-500{% else %}text-gray-500{% endif %}">
+                                    {{ product.quantity|default:"0" }} {{ product.unit|default:"dona" }} mavjud
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </section>
+
     <!-- FAB Button -->
     <button class="fixed bottom-20 right-4 w-14 h-14 bg-primary rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button z-40">
-    <i class="ri-add-fill text-white text-2xl"></i>
+        <i class="ri-add-fill text-white text-2xl"></i>
     </button>
+
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
-    <div class="grid grid-cols-5 h-16">
-    <a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-        <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-            <div class="w-6 h-6 flex items-center justify-center">
-            <i class="ri-home-5-fill text-primary"></i>
-            </div>
-            <span class="text-xs text-primary font-medium">Bosh sahifa</span>
-            </button>
-    </a>
-    <a href="{% url 'mahsulotlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <div class="w-6 h-6 flex items-center justify-center">
-    <i class="ri-shopping-bag-3-line text-gray-400"></i>
-    </div>
-    <span class="text-xs text-gray-400">Mahsulotlar</span>
-    </a>
-    <a href="{% url 'analitika' %}"  data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <div class="w-6 h-6 flex items-center justify-center">
-    <i class="ri-bar-chart-box-line text-gray-400"></i>
-    </div>
-    <span class="text-xs text-gray-400">Analitika</span>
-    </button>
-    </a>
-    <a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <div class="w-6 h-6 flex items-center justify-center">
-    <i class="ri-group-line text-gray-400"></i>
-    </div>
-    <span class="text-xs text-gray-400">Mijozlar</span>
-    </button>
-    </a>
-    <a href="{% url 'sozlamalar' %}"  data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
-    <div class="w-6 h-6 flex items-center justify-center">
-    <i class="ri-settings-3-line text-gray-400"></i>
-    </div>
-    <span class="text-xs text-gray-400">Sozlamalar</span>
-    </button>
-    </a>
-    </div>
+        <div class="grid grid-cols-5 h-16">
+            <a href="{% url 'home' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-home-5-fill text-primary"></i>
+                    </div>
+                    <span class="text-xs text-primary font-medium">Bosh sahifa</span>
+                </button>
+            </a>
+            <a href="{% url 'mahsulotlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-shopping-bag-3-line text-gray-400"></i>
+                </div>
+                <span class="text-xs text-gray-400">Mahsulotlar</span>
+            </a>
+            <a href="{% url 'analitika' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-bar-chart-box-line text-gray-400"></i>
+                    </div>
+                    <span class="text-xs text-gray-400">Analitika</span>
+                </button>
+            </a>
+            <a href="{% url 'mijozlar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-group-line text-gray-400"></i>
+                    </div>
+                    <span class="text-xs text-gray-400">Mijozlar</span>
+                </button>
+            </a>
+            <a href="{% url 'sozlamalar' %}" data-readdy="true" class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                <button class="flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-settings-3-line text-gray-400"></i>
+                    </div>
+                    <span class="text-xs text-gray-400">Sozlamalar</span>
+                </button>
+            </a>
+        </div>
     </nav>
-    <script id="search-functionality">
-    document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.querySelector('input[placeholder*="Mahsulot"]');
-    const productItems = document.querySelectorAll('.space-y-3 > div');
-    searchInput.addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    productItems.forEach(item => {
-    const productName = item.querySelector('h4').textContent.toLowerCase();
-    if (productName.includes(searchTerm)) {
-    item.style.display = 'block';
-    } else {
-    item.style.display = 'none';
-    }
-    });
-    });
-    });
-    </script>
-    <script id="category-filter">
-    document.addEventListener('DOMContentLoaded', function() {
-    const categoryButtons = document.querySelectorAll('section:nth-child(2) button');
-    const productItems = document.querySelectorAll('.space-y-3 > div');
-    categoryButtons.forEach(button => {
-    button.addEventListener('click', function() {
-    categoryButtons.forEach(btn => {
-    btn.classList.remove('bg-primary', 'text-white');
-    btn.classList.add('bg-gray-100', 'text-gray-600');
-    });
-    this.classList.remove('bg-gray-100', 'text-gray-600');
-    this.classList.add('bg-primary', 'text-white');
-    const category = this.textContent.trim();
-    if (category === 'Barchasi') {
-    productItems.forEach(item => {
-    item.style.display = 'block';
-    });
-    } else {
-    productItems.forEach(item => {
-    const productCategory = item.querySelector('p').textContent;
-    if (productCategory.includes(category) || category === 'Oziq-ovqat' && productCategory.includes('Oziq-ovqat')) {
-    item.style.display = 'block';
-    } else {
-    item.style.display = 'none';
-    }
-    });
-    }
-    });
-    });
-    });
-    </script>
-    <script id="navigation-handler">
-    document.addEventListener('DOMContentLoaded', function() {
-    const navButtons = document.querySelectorAll('nav button');
-    navButtons.forEach(button => {
-    button.addEventListener('click', function() {
-    navButtons.forEach(btn => {
-    const icon = btn.querySelector('i');
-    const text = btn.querySelector('span');
-    icon.classList.remove('text-primary');
-    icon.classList.add('text-gray-400');
-    text.classList.remove('text-primary', 'font-medium');
-    text.classList.add('text-gray-400');
-    });
-    const activeIcon = this.querySelector('i');
-    const activeText = this.querySelector('span');
-    activeIcon.classList.remove('text-gray-400');
-    activeIcon.classList.add('text-primary');
-    activeText.classList.remove('text-gray-400');
-    activeText.classList.add('text-primary', 'font-medium');
-    });
-    });
-    });
-    </script>
-    <script id="fab-button-handler">
-    document.addEventListener('DOMContentLoaded', function() {
-    const fabButton = document.querySelector('.fixed.bottom-20');
-    fabButton.addEventListener('click', function() {
-    const productForm = document.createElement('div');
-    productForm.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
-    productForm.innerHTML = `
-    <div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
-    <div class="flex items-center justify-between mb-6">
-    <h3 class="text-lg font-semibold text-gray-800">Yangi mahsulot qo'shish</h3>
-    <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-form">
-    <i class="ri-close-line text-gray-600"></i>
-    </button>
-    </div>
-    <form class="space-y-4">
-    <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Mahsulot nomi</label>
-    <input type="text" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Mahsulot nomini kiriting">
-    </div>
-    <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Kategoriya</label>
-    <div class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none cursor-pointer flex items-center justify-between">
-    <span class="text-gray-500">Kategoriyani tanlang</span>
-    <i class="ri-arrow-down-s-line text-gray-400"></i>
-    </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-    <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Kirim narxi</label>
-    <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
-    </div>
-    <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Sotuv narxi</label>
-    <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
-    </div>
-    </div>
-    <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Miqdor</label>
-    <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
-    </div>
-    <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button">Saqlash</button>
-    </form>
-    </div>
-    `;
-    document.body.appendChild(productForm);
-    const closeButton = productForm.querySelector('.close-form');
-    closeButton.addEventListener('click', function() {
-    document.body.removeChild(productForm);
-    });
-    productForm.addEventListener('click', function(e) {
-    if (e.target === productForm) {
-    document.body.removeChild(productForm);
-    }
-    });
-    });
-    });
-    </script>
-    
-   
+
+    <!-- JavaScript -->
     <script>
-    // Sayt yuklanganda
-    document.addEventListener('DOMContentLoaded', function() {
-        const splashScreen = document.getElementById('splashScreen');
-        const showSplashBtn = document.getElementById('showSplashBtn');
-        
-        // localStorage-dan ma'lumotni o'qiymiz
-        const hasSeenSplash = localStorage.getItem('sklatSplashSeen');
-        
-        // Agar birinchi marta kirsak, splash screen-ni ko'rsatamiz
-        if (!hasSeenSplash) {
-            // Bir oz kutib, keyin ko'rsatamiz (browser rendering uchun)
-            setTimeout(() => {
-                splashScreen.classList.add('show');
-                
-                // 4 soniyadan keyin splash screen-ni yashiramiz
-                setTimeout(() => {
-                    splashScreen.classList.add('hiding');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('input[placeholder*="Mahsulot"]');
+            const productItems = document.querySelectorAll('.space-y-3 > div');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    productItems.forEach(item => {
+                        const productName = item.querySelector('h4').textContent.toLowerCase();
+                        if (productName.includes(searchTerm)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
+            
+            // Category filter
+            const categoryButtons = document.querySelectorAll('section:nth-child(2) button');
+            if (categoryButtons.length > 0) {
+                categoryButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        categoryButtons.forEach(btn => {
+                            btn.classList.remove('bg-primary', 'text-white');
+                            btn.classList.add('bg-gray-100', 'text-gray-600');
+                        });
+                        this.classList.remove('bg-gray-100', 'text-gray-600');
+                        this.classList.add('bg-primary', 'text-white');
+                        
+                        const category = this.textContent.trim();
+                        if (category === 'Barchasi') {
+                            productItems.forEach(item => {
+                                item.style.display = 'block';
+                            });
+                        } else {
+                            productItems.forEach(item => {
+                                const productCategory = item.querySelector('p').textContent;
+                                if (productCategory.includes(category) || (category === 'Oziq-ovqat' && productCategory.includes('Oziq-ovqat'))) {
+                                    item.style.display = 'block';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Navigation handler
+            const navButtons = document.querySelectorAll('nav button');
+            if (navButtons.length > 0) {
+                navButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        navButtons.forEach(btn => {
+                            const icon = btn.querySelector('i');
+                            const text = btn.querySelector('span');
+                            if (icon) icon.classList.remove('text-primary');
+                            if (icon) icon.classList.add('text-gray-400');
+                            if (text) text.classList.remove('text-primary', 'font-medium');
+                            if (text) text.classList.add('text-gray-400');
+                        });
+                        const activeIcon = this.querySelector('i');
+                        const activeText = this.querySelector('span');
+                        if (activeIcon) {
+                            activeIcon.classList.remove('text-gray-400');
+                            activeIcon.classList.add('text-primary');
+                        }
+                        if (activeText) {
+                            activeText.classList.remove('text-gray-400');
+                            activeText.classList.add('text-primary', 'font-medium');
+                        }
+                    });
+                });
+            }
+            
+            // FAB button handler
+            const fabButton = document.querySelector('.fixed.bottom-20');
+            if (fabButton) {
+                fabButton.addEventListener('click', function() {
+                    const productForm = document.createElement('div');
+                    productForm.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end';
+                    productForm.innerHTML = `
+                        <div class="bg-white w-full rounded-t-2xl p-6 transform translate-y-0 transition-transform duration-300">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800">Yangi mahsulot qo'shish</h3>
+                                <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer close-form">
+                                    <i class="ri-close-line text-gray-600"></i>
+                                </button>
+                            </div>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mahsulot nomi</label>
+                                    <input type="text" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Mahsulot nomini kiriting">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategoriya</label>
+                                    <div class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none cursor-pointer flex items-center justify-between">
+                                        <span class="text-gray-500">Kategoriyani tanlang</span>
+                                        <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kirim narxi</label>
+                                        <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Sotuv narxi</label>
+                                        <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Miqdor</label>
+                                    <input type="number" class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0">
+                                </div>
+                                <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium cursor-pointer !rounded-button">Saqlash</button>
+                            </form>
+                        </div>
+                    `;
+                    document.body.appendChild(productForm);
                     
-                    // Animatsiya tugagach, to'liq yashirish
-                    setTimeout(() => {
-                        splashScreen.classList.remove('show', 'hiding');
-                        // localStorage-ga yozamiz (bir marta ko'rganligini)
-                        localStorage.setItem('sklatSplashSeen', 'true');
-                    }, 1000);
-                }, 4000);
-            }, 100);
-        } else {
-            // Agar oldin ko'rgan bo'lsa, hech narsa ko'rsatmaymiz
-            splashScreen.style.display = 'none';
-        }
-        
-        // Tugma bosilganda splash screen-ni qayta ko'rsatish
-        showSplashBtn.addEventListener('click', function() {
-            // Ekrandan chiqarib qo'yish
-            splashScreen.classList.remove('hiding');
-            splashScreen.style.display = 'flex';
-            
-            // Bir oz kutib, keyin ko'rsatamiz
-            setTimeout(() => {
-                splashScreen.classList.add('show');
-                
-                // Animatsiyalarni qayta ishga tushirish
-                resetAnimations();
-                
-                // 4 soniyadan keyin yana yashirish
-                setTimeout(() => {
-                    splashScreen.classList.add('hiding');
+                    const closeButton = productForm.querySelector('.close-form');
+                    if (closeButton) {
+                        closeButton.addEventListener('click', function() {
+                            document.body.removeChild(productForm);
+                        });
+                    }
                     
-                    // Animatsiya tugagach, to'liq yashirish
+                    productForm.addEventListener('click', function(e) {
+                        if (e.target === productForm) {
+                            document.body.removeChild(productForm);
+                        }
+                    });
+                });
+            }
+            
+            // Splash screen functionality
+            const splashScreen = document.getElementById('splashScreen');
+            if (splashScreen) {
+                const hasSeenSplash = localStorage.getItem('sklatSplashSeen');
+                
+                if (!hasSeenSplash) {
                     setTimeout(() => {
-                        splashScreen.classList.remove('show', 'hiding');
-                    }, 1000);
-                }, 4000);
-            }, 10);
+                        splashScreen.classList.add('show');
+                        setTimeout(() => {
+                            splashScreen.classList.add('hiding');
+                            setTimeout(() => {
+                                splashScreen.classList.remove('show', 'hiding');
+                                localStorage.setItem('sklatSplashSeen', 'true');
+                            }, 1000);
+                        }, 4000);
+                    }, 100);
+                } else {
+                    splashScreen.style.display = 'none';
+                }
+            }
         });
-        
-        // Animatsiyalarni qayta ishga tushirish funksiyasi
-        function resetAnimations() {
-            const logo = document.querySelector('.logo');
-            const title = document.querySelector('.title');
-            const subtitle = document.querySelector('.subtitle');
-            const loadingBar = document.querySelector('.loading-bar');
-            const loadingProgress = document.querySelector('.loading-progress');
-            
-            // Animatsiya klasslarini olib tashlash
-            logo.style.animation = 'none';
-            title.style.animation = 'none';
-            subtitle.style.animation = 'none';
-            loadingBar.style.animation = 'none';
-            loadingProgress.style.animation = 'none';
-            
-            // Reflow trigger
-            void logo.offsetWidth;
-            void title.offsetWidth;
-            void subtitle.offsetWidth;
-            void loadingBar.offsetWidth;
-            void loadingProgress.offsetWidth;
-            
-            // Animatsiyalarni qayta qo'shish
-            logo.style.animation = 'logoAnimation 2s ease-in-out 0.5s both, float 3s ease-in-out infinite 2s';
-            title.style.animation = 'slideUpFade 1.5s ease-out 0.8s both, glow 2s ease-in-out infinite alternate 2s';
-            subtitle.style.animation = 'slideUpFade 1.5s ease-out 1.1s both, subtlePulse 3s ease-in-out infinite 2s';
-            loadingBar.style.animation = 'fadeIn 0.5s ease 1.5s forwards';
-            loadingProgress.style.animation = 'loading 3s ease-in-out forwards';
-        }
-        
-        // Foydalanuvchi chiqib ketsa (tab yopilsa) localStorage-ni tozalash variantlari
-        // Bu ixtiyoriy - agar foydalanuvchi har safar yangi sessiyada splash screen ko'rishni xohlasa
-        window.addEventListener('beforeunload', function() {
-            // Agar siz foydalanuvchi saytdan chiqib ketganda splash screen-ni qayta ko'rsatishni xohlasangiz:
-            // localStorage.removeItem('sklatSplashSeen');
-        });
-    });
-    
-    // Saytni yangilash haqida ogohlantirish (qo'shimcha)
-    window.addEventListener('beforeunload', function(e) {
-        // Bu faqat ogohlantirish uchun, amalda kerak emas
-    });
     </script>
 </body>
 </html>
